@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAEINDIA REEV 4.0 — Range Extended Electric Vehicle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="track-bg" aria-hidden="true"></div>
+<div class="glow" aria-hidden="true"></div>
+
+<header>
+  <nav>
+    <div class="brand">
+      <img src="assets/images/logo.png" alt="SAEINDIA REEV logo">
+      <div class="brand-text">SAEINDIA REEV<span>Range Extended Electric Vehicle</span></div>
+    </div>
+    <div class="navlinks">
+      <a href="#about">About</a>
+      <a href="#journey">Journey</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#architecture">4.0 Architecture</a>
+      <a href="#committee">Committee</a>
+      <a href="#partners">Partners</a>
+      <a href="#register">Register</a>
+    </div>
+    <a href="#register" class="nav-cta">Register a Team</a>
+    <button class="menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M1 4H17M1 9H17M1 14H17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="#about">About</a>
+    <a href="#journey">Journey</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#architecture">4.0 Architecture</a>
+    <a href="#committee">Committee</a>
+    <a href="#partners">Partners</a>
+    <a href="#register">Register</a>
+    <a href="#register" class="nav-cta">Register a Team</a>
+  </div>
+</header>
+
+<div class="countdown-strip">
+  <div class="wrap countdown-inner">
+    <span class="cs-label">Registration closes 10 Sep 2026</span>
+    <div class="cs-timer" id="reg-countdown" aria-live="polite">
+      <div class="cs-unit"><span class="cs-num" id="cd-days">--</span><span class="cs-unit-label">Days</span></div>
+      <div class="cs-unit"><span class="cs-num" id="cd-hours">--</span><span class="cs-unit-label">Hrs</span></div>
+      <div class="cs-unit"><span class="cs-num" id="cd-mins">--</span><span class="cs-unit-label">Min</span></div>
+      <div class="cs-unit"><span class="cs-num" id="cd-secs">--</span><span class="cs-unit-label">Sec</span></div>
+    </div>
+  </div>
+</div>
+
+<section class="hero wrap">
+  <div class="hero-slideshow" aria-hidden="true">
+    <div class="slide active" style="background-image:url('assets/images/hero-finish-line.jpg')"></div>
+    <div class="slide" style="background-image:url('assets/images/hero-campus-run.jpg')"></div>
+    <div class="slide" style="background-image:url('assets/images/hero-track-pair.jpg')"></div>
+  </div>
+  <div class="hero-scrim" aria-hidden="true"></div>
+
+  <div class="eyebrow">REEV 4.0</div>
+  <h1>Range Extended<br><span class="accent">Electric Vehicle.</span></h1>
+
+  <div class="hero-lede">
+    <div>
+      <div class="hero-copy">
+        REEV is India's own OEM-style vehicle development competition — engineering students design, simulate, and build a <strong>series-hybrid urban mobility vehicle</strong> from the ground up, mentored by working engineers from TVS Motor, Bosch, TCS, Volvo and more.
+      </div>
+      <div class="hero-actions">
+        <a href="#register" class="btn-primary">Register your college</a>
+        <a href="#journey" class="btn-ghost">See the REEV journey ↓</a>
+      </div>
+    </div>
+    <div class="telemetry-panel">
+      <div class="tp-label">Edition specification</div>
+      <div class="tp-line"><span>Edition</span><span>4.0 — 2026/27</span></div>
+      <div class="tp-line"><span>Architecture</span><span>Series-hybrid, Open VCU</span></div>
+      <div class="tp-line"><span>Registration window</span><span>25 Aug – 10 Sep</span></div>
+      <div class="tp-line"><span>First technical session</span><span>12 Sep</span></div>
+    </div>
+  </div>
+
+  <div class="hero-divider" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+</section>
+
+<div class="stat-strip" aria-hidden="true">
+  <div class="stat-track">
+    <span><strong>3</strong> EDITIONS COMPLETED SINCE 2019</span>
+    <span><strong>250+</strong> STUDENTS &amp; FACULTY ENGAGED</span>
+    <span><strong>9+</strong> PARTICIPATING COLLEGES</span>
+    <span><strong>15+</strong> INDUSTRY SPONSORS</span>
+    <span><strong>100+</strong> VOLUNTEERS &amp; MENTORS</span>
+    <span>TOWARDS A CARBON NEUTRAL WORLD</span>
+    <span><strong>3</strong> EDITIONS COMPLETED SINCE 2019</span>
+    <span><strong>250+</strong> STUDENTS &amp; FACULTY ENGAGED</span>
+    <span><strong>9+</strong> PARTICIPATING COLLEGES</span>
+    <span><strong>15+</strong> INDUSTRY SPONSORS</span>
+    <span><strong>100+</strong> VOLUNTEERS &amp; MENTORS</span>
+    <span>TOWARDS A CARBON NEUTRAL WORLD</span>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <div class="sec-tag">What REEV is</div>
+      <h2 style="font-family:var(--display);font-weight:600;font-size:clamp(25px,3.2vw,34px);margin-bottom:24px;">An OEM-grade engineering programme, run for students.</h2>
+      <p>REEV — Range Extended Electric Vehicle — is a competition built around <strong>range and fuel efficiency</strong>. It pushes teams through the same technologies reshaping the auto industry today: hybridization, light-weighting, energy optimization, and range extension.</p>
+      <p>Students from <strong>Computer Science, Electrical, Electronics, Mechanical, Automobile and Production</strong> backgrounds form a single cross-functional team and take a vehicle from concept through simulation to a physical build — mentored end-to-end by engineers from the industry.</p>
+      <div class="focus-tags">
+        <span class="chip">Battery &amp; Energy Systems</span>
+        <span class="chip">Range Extender Integration</span>
+        <span class="chip">Controls &amp; Energy Management</span>
+        <span class="chip">Simulation &amp; Digital Twin</span>
+        <span class="chip">Vehicle Safety</span>
+      </div>
+    </div>
+    <div class="spec-card reveal">
+      <div class="sc-label">Recognition on offer</div>
+      <div class="sc-line"><span>Winner</span><span>₹1,50,000</span></div>
+      <div class="sc-line"><span>1st Runner-up</span><span>₹1,00,000</span></div>
+      <div class="sc-line"><span>2nd Runner-up</span><span>₹75,000</span></div>
+      <div class="sc-line"><span>Also awarded</span><span>Best Margdarshak (Faculty)</span></div>
+      <div class="sc-line"><span>Simulation training on</span><span>IPG CarMaker, ANSYS, MATLAB</span></div>
+      <div class="sc-line"><span>Site visit</span><span>State-of-the-art test facility</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="journey">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">Six years on track</div>
+        <h2>From an awareness workshop to a 4th-edition build.</h2>
+      </div>
+      <p>REEV has run continuously since 2019 — each edition sharpening the architecture and widening the field.</p>
+    </div>
+    <div class="race-track">
+      <div class="race-line reveal-stagger reveal">
+        <div class="laps">
+          <div class="lap">
+            <div class="lap-flag">•</div>
+            <span class="lap-year">2019</span>
+            <h3>Awareness workshop</h3>
+            <p>REEV begins life as an awareness and outreach programme introducing colleges to vehicle development.</p>
+          </div>
+          <div class="lap">
+            <div class="lap-flag">1</div>
+            <span class="lap-year">Edition 1</span>
+            <h3>First build</h3>
+            <p>The earliest teams take on custom 48V generator architectures and hybrid bench builds.</p>
+          </div>
+          <div class="lap">
+            <div class="lap-flag">2</div>
+            <span class="lap-year">Edition 2</span>
+            <h3>Scaling up</h3>
+            <p>More colleges join; the competition posts a real operating surplus for the first time.</p>
+          </div>
+          <div class="lap">
+            <div class="lap-flag">3</div>
+            <span class="lap-year">Jan 2026</span>
+            <h3>3rd Edition, GITAM</h3>
+            <p>Finals held at GITAM University, Bengaluru — the largest and most complete edition to date.</p>
+          </div>
+          <div class="lap current">
+            <div class="lap-flag">4</div>
+            <span class="lap-year">2026–27</span>
+            <h3>4th Edition — REEV 4.0</h3>
+            <p>A refined, standardized architecture shifts the challenge from hardware fabrication to software and control strategy.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">On track &amp; on stage</div>
+        <h2>Moments from three editions of REEV.</h2>
+      </div>
+      <p>Real builds, real finals, real recognition — plus a look at the design studies behind them.</p>
+    </div>
+    <div class="gallery-grid reveal-stagger reveal">
+      <div class="gallery-item">
+        <img src="assets/images/gallery-award-2026.jpg" alt="REEV 2026 team and organizing committee on stage at GITAM University celebrating a 2nd Runner-up finish, with sponsor logos on the backdrop screen" loading="lazy">
+        <div class="gallery-caption-bar">
+          <span class="gallery-caption">2nd Runner-up, REEV 2026</span>
+          <span class="gallery-tag">GITAM University</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/images/gallery-award-2022.jpg" alt="REEV team celebrating on stage after finishing 1st Runner-up at the SAEINDIA REEV Finals, Christ University" loading="lazy">
+        <div class="gallery-caption-bar">
+          <span class="gallery-caption">1st Runner-up, Christ University</span>
+          <span class="gallery-tag">SAEINDIA REEV Finals</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/images/gallery-concept-1.jpg" alt="Concept render of a REEV series-hybrid vehicle body design in white and orange" loading="lazy">
+        <div class="gallery-caption-bar">
+          <span class="gallery-caption">Vehicle body concept study</span>
+          <span class="gallery-tag">Concept design</span>
+        </div>
+      </div>
+      <div class="gallery-item">
+        <img src="assets/images/gallery-concept-2.jpg" alt="Concept render of a REEV vehicle shell displayed at an exhibition, in black and orange" loading="lazy">
+        <div class="gallery-caption-bar">
+          <span class="gallery-caption">Vehicle shell concept study</span>
+          <span class="gallery-tag">Concept design</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="architecture">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">REEV 4.0</div>
+        <h2>A refined architecture, built on what three editions taught us.</h2>
+      </div>
+      <p>REEV 4.0 is an improvement on the existing platform, not a replacement — aimed at deeper industry relevance.</p>
+    </div>
+  </div>
+  <div class="arch-grid wrap reveal-stagger reveal" style="padding:0 32px;">
+    <div class="arch-card">
+      <div class="ac-index">// PROPULSION</div>
+      <h3>Series-hybrid, always</h3>
+      <p>The electric motor is the sole source of propulsion. The ICE range extender only drives a generator — it never touches the wheels.</p>
+    </div>
+    <div class="arch-card">
+      <div class="ac-index">// STANDARDIZATION</div>
+      <h3>One motor, one engine spec</h3>
+      <p>A standardized Baja-spec engine and a single motor size replace bespoke generators, widening access and removing ambiguity for new teams.</p>
+    </div>
+    <div class="arch-card">
+      <div class="ac-index">// ENERGY</div>
+      <h3>Dual battery, software-managed</h3>
+      <p>Two battery packs per vehicle switch under Open VCU software control, activating automatically around 20% state of charge.</p>
+    </div>
+    <div class="arch-card">
+      <div class="ac-index">// SOFTWARE FIRST</div>
+      <h3>Open VCU is the differentiator</h3>
+      <p>With hardware standardized, teams now compete primarily on control strategy and software — not component sourcing.</p>
+    </div>
+    <div class="arch-card">
+      <div class="ac-index">// PARTNERSHIP</div>
+      <h3>Built with Baja &amp; e-Baja</h3>
+      <p>Shared engine specification with SAEINDIA's Baja programme means Baja and e-Baja teams can enter REEV with far less retooling.</p>
+    </div>
+    <div class="arch-card">
+      <div class="ac-index">// MENTORSHIP</div>
+      <h3>Subject-matter experts, by domain</h3>
+      <p>Every subsystem — battery, charging, powertrain, thermal, software — is mentored by a named industry SME through the season.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding:56px 0;">
+  <div class="wrap reveal">
+    <div style="text-align:center;font-family:var(--mono);font-size:11px;color:var(--steel);text-transform:uppercase;letter-spacing:.12em;margin-bottom:22px;">Our mentors build vehicles for</div>
+    <div class="supporter-row" style="display:flex;justify-content:center;flex-wrap:wrap;gap:12px;">
+      <span class="chip">TVS Motor Company</span>
+      <span class="chip">Bosch</span>
+      <span class="chip">TCS</span>
+      <span class="chip">Volvo Group</span>
+      <span class="chip">Vitesco Technologies</span>
+      <span class="chip">SEG Automotive</span>
+      <span class="chip">Eaton</span>
+      <span class="chip">Alstom</span>
+      <span class="chip">TE Connectivity</span>
+      <span class="chip">General Motors</span>
+    </div>
+  </div>
+</section>
+
+<div class="promo-strip reveal">
+  <div class="wrap promo-strip-inner">
+    <span><strong>Want to partner with REEV 4.0?</strong> Title, Platinum, Gold, Silver, Bronze and Technology Partner slots are open for the 2026–27 season.</span>
+    <a href="#partners" class="promo-strip-link">See sponsorship tiers →</a>
+  </div>
+</div>
+
+<section class="section" id="committee">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">Who runs it</div>
+        <h2>A committee structure built like an OEM programme office.</h2>
+      </div>
+      <p>Three subcommittees report through a Convenor to the OC Chair, guided by an Advisory Board.</p>
+    </div>
+    <div class="org-tiers reveal">
+      <div class="org-row">
+        <div class="org-card lead">
+          <div class="oc-role">OC Chair</div>
+          <div class="oc-desc">Overall ownership · governance · final authority</div>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+      <div class="org-row">
+        <div class="org-card">
+          <div class="oc-role">Convenor</div>
+          <div class="oc-desc">Day-to-day execution &amp; milestone tracking</div>
+        </div>
+        <div class="org-card">
+          <div class="oc-role">Advisory Board</div>
+          <div class="oc-desc">OEMs, Tier-1s, academia &amp; energy specialists</div>
+        </div>
+        <div class="org-card">
+          <div class="oc-role">Program Director</div>
+          <div class="oc-desc">Growth, partnerships &amp; sponsorship</div>
+        </div>
+      </div>
+      <div class="org-connector"></div>
+      <div class="org-row">
+        <div class="org-card">
+          <div class="oc-role">Technical Committee</div>
+          <div class="oc-desc">Architecture, rulebook &amp; evaluation criteria</div>
+        </div>
+        <div class="org-card">
+          <div class="oc-role">Event &amp; Operations</div>
+          <div class="oc-desc">Venue, logistics &amp; on-ground execution</div>
+        </div>
+        <div class="org-card">
+          <div class="oc-role">Alumni Committee</div>
+          <div class="oc-desc">Talent pipeline &amp; hands-on prototyping support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="border-bottom:none;">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">In their words</div>
+        <h2>What REEV alumni carry forward.</h2>
+      </div>
+    </div>
+    <div class="testimonial reveal">
+      <p>REEV let me put vehicle design on one side and classroom theory on the other, and watch them meet. Getting real industry exposure — two dedicated mentors per team, pushing us to communicate clearly and deliver on time — is something no lecture hall gives you.</p>
+      <div class="t-attr">— A REEV alumnus, automobile engineering</div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">Event checkpoints</div>
+        <h2>The road from registration to a vehicle on the road.</h2>
+      </div>
+      <p>Every REEV team passes through the same four checkpoints, same as the last three editions.</p>
+    </div>
+    <div class="phase-grid reveal-stagger reveal">
+      <div class="phase-card">
+        <div class="phase-num">01</div>
+        <h3>Registration &amp; Technical Sessions</h3>
+        <p>Teams register, then move through simulation workshops on IPG CarMaker, ANSYS and MATLAB.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">02</div>
+        <h3>REEV Virtuals</h3>
+        <p>A design-simulation event validating propulsion readiness before any hardware is cut.</p>
+      </div>
+      <div class="phase-card">
+        <div class="phase-num">03</div>
+        <h3>Hybrid Bench</h3>
+        <p>Teams submit bench video proof of a working hybrid powertrain ahead of vehicle build.</p>
+      </div>
+      <div class="phase-card phase-photo" style="background-image:url('assets/images/hero-track-pair.jpg')">
+        <div class="phase-scrim" aria-hidden="true"></div>
+        <div class="phase-num">04</div>
+        <h3>REEV Finals</h3>
+        <p>Vehicle readiness and launch — the completed build goes on-road in front of the jury.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="register">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">Get your college in</div>
+        <h2>REEV 4.0 registration is open now.</h2>
+      </div>
+      <p>Target REEV colleges and active collegiate clubs are already reaching out — don't wait for the window to close.</p>
+    </div>
+    <div class="reg-strip reveal">
+      <div class="reg-row">
+        <div class="reg-item">
+          <div class="ri-date">25 Aug</div>
+          <div class="ri-label">Registration opens</div>
+        </div>
+        <div class="reg-item">
+          <div class="ri-date">10 Sep</div>
+          <div class="ri-label">Registration closes</div>
+        </div>
+        <div class="reg-item">
+          <div class="ri-date">12 Sep</div>
+          <div class="ri-label">First technical session</div>
+        </div>
+        <div class="reg-item">
+          <div class="ri-date">2026–27</div>
+          <div class="ri-label">Season runs through</div>
+        </div>
+      </div>
+      <div class="reg-cta">
+        <div>
+          <span class="reg-cta-label">Ready to lock in your slot?</span>
+          <span class="reg-cta-detail">Email your college name, team size and category — we'll send the registration form and technical session details.</span>
+        </div>
+        <a href="mailto:manager@saeibs.org?subject=REEV%204.0%20Team%20Registration&body=College%20name%3A%0ATeam%20size%3A%0ACategory%20(REEV%20%2F%20e-Baja)%3A%0A" class="btn-primary">Register your team ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="partners">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <div class="sec-tag">Partner with REEV 4.0</div>
+        <h2>Sponsorship tiers are open for the 2026–27 season.</h2>
+      </div>
+      <p>Join the companies whose engineers already mentor REEV teams — with logo placement, judging seats, and direct access to industry-ready student talent.</p>
+    </div>
+
+    <a class="tier-spotlight reveal" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Title%20Sponsorship%20Enquiry">
+      <span class="tier-spotlight-label">Title Partner</span>
+      <span class="tier-spotlight-status">Open for 2026–27</span>
+      <span class="tier-spotlight-cta">Enquire ↗</span>
+    </a>
+
+    <div class="tier-grid reveal-stagger reveal">
+      <a class="tier-card" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Platinum%20Sponsorship%20Enquiry">
+        <span class="tc-name">Platinum</span><span class="tc-status">Open</span>
+      </a>
+      <a class="tier-card" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Gold%20Sponsorship%20Enquiry">
+        <span class="tc-name">Gold</span><span class="tc-status">Open</span>
+      </a>
+      <a class="tier-card" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Silver%20Sponsorship%20Enquiry">
+        <span class="tc-name">Silver</span><span class="tc-status">Open</span>
+      </a>
+      <a class="tier-card" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Bronze%20Sponsorship%20Enquiry">
+        <span class="tc-name">Bronze</span><span class="tc-status">Open</span>
+      </a>
+      <a class="tier-card" href="mailto:manager@saeibs.org?subject=REEV%204.0%20Technology%20Partner%20Enquiry">
+        <span class="tc-name">Technology Partner</span><span class="tc-status">Open</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section wrap reveal">
+  <div class="eyebrow">Reach us</div>
+  <h2>Bring your team to REEV 4.0.</h2>
+  <p>For registration queries, technical session details, or sponsorship conversations — reach the team directly.</p>
+  <div class="cta-buttons">
+    <a href="mailto:manager@saeibs.org" class="btn-primary">manager@saeibs.org</a>
+    <a href="https://www.saeindia.org/bangaluru-section/reev/" class="btn-ghost">Official SAEINDIA REEV page ↗</a>
+  </div>
+  <div class="contact-line reveal">
+    <span class="cl-name">Suyash Tripathi</span>
+    <span class="cl-role">Assistant Manager, SAEINDIA Bengaluru Section</span>
+    <span class="cl-detail">manager@saeibs.org · +91 90263 10981</span>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="assets/images/logo.png" alt="SAEINDIA REEV logo">
+        <div>
+          <div style="font-family:var(--display);font-weight:700;font-size:16px;">SAEINDIA REEV</div>
+          <p>The Range Extended Electric Vehicle competition — run by the SAEINDIA Bengaluru Section since 2019, modeled on real OEM vehicle development.</p>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Programme</h4>
+        <a href="#about">About REEV</a>
+        <a href="#journey">The journey</a>
+        <a href="#architecture">4.0 architecture</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get involved</h4>
+        <a href="#committee">Committee</a>
+        <a href="#register">Register your team</a>
+        <a href="https://www.saeindia.org/bangaluru-section/reev/">Official SAEINDIA page ↗</a>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <a href="mailto:manager@saeibs.org">manager@saeibs.org</a>
+        <a href="https://www.saeindia.org/section/bangalore-section/">SAEINDIA Bengaluru Section ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 SAEINDIA REEV — Bengaluru Section</span>
+      <span>Towards a carbon neutral world</span>
+    </div>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" type="button" aria-label="Close image">&times;</button>
+  <img src="" alt="">
+  <div class="lightbox-caption"></div>
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>
