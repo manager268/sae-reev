@@ -100,14 +100,46 @@ Script's deployment versioning. Just redeploy after any edit.
    registrations (repeat steps 2-4 with the live keys, then
    `supabase secrets set` + redeploy again).
 
-## What's deliberately not built (yet)
+## Step 5 — Admin dashboard
 
-Supabase also does user accounts (signup/login/sessions) — the "Team
-Login" / "Alumni Login" pages on login.html are still just static "coming
-soon" stubs, not wired to Supabase Auth. That's a separate, sizeable
-feature (an actual dashboard for teams to log into and see/edit their own
-registration) — say the word whenever you want that built; this pass was
-scoped to replacing the registration/payment backend only.
+`admin.html` — a real login (Supabase Auth), showing every team/registrant
+and payment collected, with CSV export and manual corrections. It's not
+linked from any nav — reachable only if you know the URL.
+
+1. **SQL Editor → New query**, paste the entire contents of
+   [supabase/admin_schema.sql](supabase/admin_schema.sql), **Run**. This is
+   additive on top of `schema.sql` (Step 1) — adds an `is_admin()` helper,
+   admin-gated read/update/delete policies on all 9 tables, and a new
+   `admin_audit_log` table recording every edit/delete an admin makes
+   (who, when, before/after).
+2. Create the first admin account: **Authentication → Users → Add User**
+   (check **Auto Confirm User**), then run this in the SQL Editor with that
+   user's email:
+   ```sql
+   insert into public.profiles (id, full_name, email, role)
+   select id, '', email, 'admin' from auth.users where email = 'you@example.com'
+   on conflict (id) do update set role = 'admin';
+   ```
+3. Visit `/admin.html`, sign in. Nothing further to configure — it reuses
+   the same `supabaseUrl`/`supabaseAnonKey` from Step 3 above.
+
+**What it does and doesn't do**: Teams (with full roster), Payments,
+Judges, Student Volunteers, Mentors, SMEs, Individuals, and a read-only
+Submission Logs viewer, each as a tab with Refresh + CSV export. Every
+table except Logs supports Edit (any field) and Delete — deleting a team
+also cascades its roster and payment record, so that one asks you to type
+the team's name to confirm; everything else just needs a normal confirm.
+There's no "add a brand-new record" button yet (only correcting/removing
+existing ones) — an easy follow-on if you want it later. The dashboard
+talks directly to Supabase (not through `registration-api`) using the same
+RLS-everywhere model as the rest of this doc: an admin session can see and
+write these tables only because `is_admin()` says so, nothing else changes
+about the public lockdown.
+
+Session note: sign-in doesn't persist past closing the browser (uses
+`sessionStorage`, not `localStorage`) — deliberate, since this may run on
+a shared computer. Reloading the page while the browser stays open keeps
+you signed in; closing and reopening the browser requires signing in again.
 
 ## Local development note
 
