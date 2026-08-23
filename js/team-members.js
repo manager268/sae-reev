@@ -22,9 +22,9 @@
     - recomputes that form's team-size field as
       member-rows-with-a-name + 1 (for the captain / contact person)
 
-  The backend (Code.gs, see REGISTRATION_SETUP.md) parses that JSON and
-  writes a readable numbered list into the sheet's Participants column,
-  for every form type that includes "participants" in its field list.
+  The backend (supabase/functions/registration-api, see SUPABASE_SETUP.md)
+  parses that JSON and writes each member as its own row in the
+  team_members table, linked to the team's row in team_registrations.
 */
 (function () {
   document.querySelectorAll('[data-member-list]').forEach((list) => {

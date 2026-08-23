@@ -4,19 +4,20 @@
   assets/data/registration.js (window.REGISTRATION_CONFIG).
 
   SETUP (one-time, done by a human — not by this script): see
-  REGISTRATION_SETUP.md. Short version: deploy the Apps Script backend,
-  paste its Web App URL into REGISTRATION_CONFIG.endpoint, and for the
-  paid forms (below) paste your Razorpay Key ID into
-  REGISTRATION_CONFIG.razorpay.keyId. Until the endpoint is set, every
-  form stays locked with a clear reason instead of silently failing.
+  SUPABASE_SETUP.md. Short version: create the Supabase project/tables,
+  deploy the registration-api Edge Function, then paste supabaseUrl +
+  supabaseAnonKey into REGISTRATION_CONFIG, and for the paid forms (below)
+  paste your Razorpay Key ID into REGISTRATION_CONFIG.razorpay.keyId.
+  Until supabaseUrl/supabaseAnonKey are set, every form stays locked with a
+  clear reason instead of silently failing.
 
   HOW EACH FORM IS WIRED:
     <form data-reg-form="team"> ... </form>
-    - data-reg-form's value is sent as "formType" so the backend knows which
-      sheet tab to append the row to.
+    - data-reg-form's value is sent as "formType" so the backend knows
+      which table(s) to write to.
     - Every <input>/<select>/<textarea> needs a "name" — that name becomes
-      the column key sent to the sheet, so keep names matching the header
-      row setup doc.
+      a field key sent to the backend, so keep names matching
+      supabase/functions/registration-api/index.ts's expectations.
     - Native HTML `required` attributes drive the "all fields required"
       behavior — the browser won't let a visitor submit past a blank
       required field, and the code below re-checks with reportValidity()
@@ -26,17 +27,17 @@
 
   PAYMENT (Team, Phase1 Previously-Participated-Team, Phase1 New-Team):
     These three form types (PAID_FORM_TYPES below) collect a registration
-    fee via Razorpay before their data is ever sent to the sheet:
+    fee via Razorpay before their data is ever written to the database:
       1. Submit click -> ask the backend to create a Razorpay order (the
-         fee amount is decided server-side in Code.gs, never trusted from
-         this file — this file never even knows the amount until Razorpay's
-         order-creation response says so).
+         fee amount is decided inside the Edge Function, never trusted
+         from this file — this file never even knows the amount until
+         Razorpay's order-creation response says so).
       2. Open Razorpay's Checkout popup for that order.
       3. On successful payment, the payment id/order id/signature Razorpay
          hands back are attached to the form data and THEN sent to the
-         backend as a normal submission — Code.gs verifies that signature
-         cryptographically before writing anything to the sheet, so a
-         forged "I paid" claim without a real payment can't get through.
+         backend as a normal submission — the Edge Function cryptographically
+         verifies that signature before writing anything, so a forged
+         "I paid" claim without a real payment can't get through.
     Requires checkout.razorpay.com's checkout.js to already be loaded on
     the page (see the <script> tag in register.html / index.html).
 */
@@ -48,6 +49,8 @@
   const PAID_FORM_TYPES = ['team', 'phase1PrevTeam', 'phase1NewTeam'];
 
   const isOpen = Date.now() >= new Date(cfg.opensAt).getTime();
+  const backendReady = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
+  const functionUrl = backendReady ? `${cfg.supabaseUrl.replace(/\/+$/, '')}/functions/v1/registration-api` : '';
 
   function statusEl(form) {
     return form.querySelector('[data-form-status]');
@@ -67,16 +70,23 @@
     setStatus(form, reason, 'locked');
   }
 
+  function callBackend(body) {
+    return fetch(functionUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: cfg.supabaseAnonKey,
+        Authorization: 'Bearer ' + cfg.supabaseAnonKey
+      },
+      body: JSON.stringify(body)
+    }).then((res) => res.json());
+  }
+
   // Sends the (possibly payment-verified) submission to the backend and
   // renders the resulting status. Shared by the paid and unpaid paths.
   function submitToBackend(form, data, submitBtn) {
     setStatus(form, 'Submitting…', 'pending');
-    return fetch(cfg.endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // avoids a CORS preflight the Apps Script doesn't handle
-      body: JSON.stringify(data)
-    })
-      .then((res) => res.json())
+    return callBackend(data)
       .then((res) => {
         if (res && res.ok) {
           setStatus(form, 'Thanks — you’re registered. We’ll be in touch.', 'success');
@@ -107,12 +117,7 @@
 
     setStatus(form, 'Preparing payment…', 'pending');
 
-    fetch(cfg.endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ action: 'createOrder', formType: data.formType })
-    })
-      .then((res) => res.json())
+    callBackend({ action: 'createOrder', formType: data.formType })
       .then((order) => {
         if (!order || !order.ok) {
           setStatus(form, (order && order.error) || 'Could not start payment — please try again.', 'error');
@@ -168,7 +173,7 @@
       lockForm(form, `Registration opens ${cfg.opensAtLabel}`);
       return;
     }
-    if (!cfg.endpoint) {
+    if (!backendReady) {
       lockForm(form, 'Registration isn’t connected yet — check back soon');
       return;
     }
