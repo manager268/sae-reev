@@ -825,7 +825,9 @@
   .admin-tab-panel{display:none;}
   .admin-tab-panel.active{display:block;}
 
-  .admin-toolbar{display:flex;gap:12px;margin-bottom:16px;}
+  .admin-toolbar{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+  .admin-toolbar .btn-primary,
+  .admin-toolbar .btn-ghost{padding:9px 16px;font-size:13px;}
   .admin-action-btn{font-size:12px;padding:6px 12px;margin-right:6px;}
 
   .badge{

@@ -89,11 +89,17 @@ create table if not exists admin_audit_log (
   actor_email text,
   table_name text not null,
   row_id uuid,
-  action text not null check (action in ('update', 'delete')),
+  action text not null check (action in ('insert', 'update', 'delete')),
   before jsonb,
   after jsonb
 );
 alter table admin_audit_log enable row level security;
+
+-- Idempotent-safe even if this ran before with the old ('update','delete')-only
+-- constraint (e.g. re-running this file after pulling a newer version of it).
+alter table admin_audit_log drop constraint if exists admin_audit_log_action_check;
+alter table admin_audit_log add constraint admin_audit_log_action_check
+  check (action in ('insert', 'update', 'delete'));
 
 drop policy if exists "admin can read audit log" on admin_audit_log;
 create policy "admin can read audit log" on admin_audit_log for select using (is_admin());
@@ -103,3 +109,19 @@ create policy "admin can write audit log" on admin_audit_log for insert with che
 
 create index if not exists admin_audit_log_created_at_idx on admin_audit_log (created_at desc);
 create index if not exists admin_audit_log_table_row_idx on admin_audit_log (table_name, row_id);
+
+-- ============ ADMIN INSERT — the 6 standalone registrant tables ============
+-- Not team_members / payments: both are child records of a team
+-- (team_registration_id), so a bare "create new" form doesn't fit them —
+-- new members/payments are added by editing/creating the parent team.
+do $$
+declare t text;
+begin
+  foreach t in array array[
+    'team_registrations','judges','student_volunteers','mentors','smes','individuals'
+  ]
+  loop
+    execute format('drop policy if exists "admin can insert" on %I', t);
+    execute format('create policy "admin can insert" on %I for insert with check (is_admin())', t);
+  end loop;
+end $$;

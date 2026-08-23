@@ -80,7 +80,8 @@
     notes: 'Notes', payment_status: 'Payment status', payment_id: 'Payment ID',
     amount_paid_inr: 'Amount paid (₹)', status: 'Status', full_name: 'Full name',
     organisation: 'Organisation', expertise: 'Expertise', email: 'Email', phone: 'Phone',
-    college: 'College', year: 'Year', interest: 'Interest', reason: 'Reason'
+    college: 'College', year: 'Year', interest: 'Interest', reason: 'Reason',
+    registration_type: 'Registration type'
   };
 
   // ============ per-tab table configuration ============
@@ -104,7 +105,9 @@
         { key: 'notes', label: 'Notes' }
       ],
       editFields: ['college_name', 'team_name', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
-      deleteConfirmField: 'team_name'
+      createFields: ['registration_type', 'college_name', 'team_name', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
+      deleteConfirmField: 'team_name',
+      insertable: true
     },
     payments: {
       table: 'payments',
@@ -128,7 +131,8 @@
         { key: 'expertise', label: 'Expertise' }, { key: 'email', label: 'Email' },
         { key: 'phone', label: 'Phone' }, { key: 'notes', label: 'Notes' }
       ],
-      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone', 'notes']
+      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone', 'notes'],
+      insertable: true
     },
     student_volunteers: {
       table: 'student_volunteers', select: '*',
@@ -138,7 +142,8 @@
         { key: 'year', label: 'Year' }, { key: 'interest', label: 'Interest' },
         { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' }
       ],
-      editFields: ['full_name', 'college', 'year', 'interest', 'email', 'phone']
+      editFields: ['full_name', 'college', 'year', 'interest', 'email', 'phone'],
+      insertable: true
     },
     mentors: {
       table: 'mentors', select: '*',
@@ -148,7 +153,8 @@
         { key: 'expertise', label: 'Expertise' }, { key: 'email', label: 'Email' },
         { key: 'phone', label: 'Phone' }, { key: 'notes', label: 'Notes' }
       ],
-      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone', 'notes']
+      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone', 'notes'],
+      insertable: true
     },
     smes: {
       table: 'smes', select: '*',
@@ -158,7 +164,8 @@
         { key: 'expertise', label: 'Expertise' }, { key: 'email', label: 'Email' },
         { key: 'phone', label: 'Phone' }
       ],
-      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone']
+      editFields: ['full_name', 'organisation', 'expertise', 'email', 'phone'],
+      insertable: true
     },
     individuals: {
       table: 'individuals', select: '*',
@@ -168,7 +175,8 @@
         { key: 'year', label: 'Year' }, { key: 'reason', label: 'Reason' },
         { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' }
       ],
-      editFields: ['full_name', 'college', 'year', 'reason', 'email', 'phone']
+      editFields: ['full_name', 'college', 'year', 'reason', 'email', 'phone'],
+      insertable: true
     },
     submission_logs: {
       table: 'submission_logs', select: '*', limit: 500, readOnly: true,
@@ -310,52 +318,77 @@
 
   function fieldLabel(key) { return FIELD_LABELS[key] || key; }
 
+  // Builds one <div class="field">...</div> for `key`, pre-filled from
+  // `row` (pass {} for a blank create-mode field). Shared by both modes so
+  // the same select/textarea/input logic never has to be written twice.
+  function buildField(key, config, row) {
+    const wrap = document.createElement('div');
+    wrap.className = 'field' + (key === 'notes' ? ' field-wide' : '');
+    const label = document.createElement('label');
+    label.textContent = fieldLabel(key);
+    label.setAttribute('for', 'edit-' + key);
+    wrap.appendChild(label);
+
+    let input;
+    if (key === 'registration_type') {
+      input = document.createElement('select');
+      [['team', 'Team'], ['phase1_prev_team', 'Previously participated team'], ['phase1_new_team', 'New / upcoming team']].forEach(([v, text]) => {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = text;
+        if ((row[key] || 'team') === v) opt.selected = true;
+        input.appendChild(opt);
+      });
+    } else if (key === 'payment_status') {
+      input = document.createElement('select');
+      ['pending', 'paid', 'failed'].forEach((v) => {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = v;
+        if ((row[key] || 'pending') === v) opt.selected = true;
+        input.appendChild(opt);
+      });
+    } else if (key === 'status' && config.table === 'payments') {
+      input = document.createElement('select');
+      ['created', 'verified', 'failed'].forEach((v) => {
+        const opt = document.createElement('option');
+        opt.value = v; opt.textContent = v;
+        if ((row[key] || 'created') === v) opt.selected = true;
+        input.appendChild(opt);
+      });
+    } else if (key === 'notes') {
+      input = document.createElement('textarea');
+      input.value = row[key] || '';
+    } else {
+      input = document.createElement('input');
+      input.type = key.includes('email') ? 'email' : key.includes('phone') ? 'tel' :
+        (key === 'team_size' || key === 'amount_paid_inr') ? 'number' : 'text';
+      input.value = row[key] === null || row[key] === undefined ? '' : row[key];
+    }
+    input.id = 'edit-' + key;
+    input.name = key;
+    wrap.appendChild(input);
+    return wrap;
+  }
+
   function openEditModal(tabName, config, row) {
-    currentEdit = { tabName, config, row };
+    currentEdit = { mode: 'edit', tabName, config, row };
     document.getElementById('admin-modal-title').textContent =
       'Edit ' + (row.team_name || row.full_name || row.college_name || 'record');
     editFieldsEl.innerHTML = '';
+    config.editFields.forEach((key) => editFieldsEl.appendChild(buildField(key, config, row)));
+    setStatus(editForm, '', '');
+    editModal.classList.add('open');
+  }
 
-    config.editFields.forEach((key) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'field' + (key === 'notes' ? ' field-wide' : '');
-      const label = document.createElement('label');
-      label.textContent = fieldLabel(key);
-      label.setAttribute('for', 'edit-' + key);
-      wrap.appendChild(label);
+  const TAB_SINGULAR = {
+    teams: 'team', judges: 'judge', student_volunteers: 'student volunteer',
+    mentors: 'mentor', smes: 'SME', individuals: 'individual'
+  };
 
-      let input;
-      if (key === 'payment_status') {
-        input = document.createElement('select');
-        ['pending', 'paid', 'failed'].forEach((v) => {
-          const opt = document.createElement('option');
-          opt.value = v; opt.textContent = v;
-          if (row[key] === v) opt.selected = true;
-          input.appendChild(opt);
-        });
-      } else if (key === 'status' && config.table === 'payments') {
-        input = document.createElement('select');
-        ['created', 'verified', 'failed'].forEach((v) => {
-          const opt = document.createElement('option');
-          opt.value = v; opt.textContent = v;
-          if (row[key] === v) opt.selected = true;
-          input.appendChild(opt);
-        });
-      } else if (key === 'notes') {
-        input = document.createElement('textarea');
-        input.value = row[key] || '';
-      } else {
-        input = document.createElement('input');
-        input.type = key.includes('email') ? 'email' : key.includes('phone') ? 'tel' :
-          (key === 'team_size' || key === 'amount_paid_inr') ? 'number' : 'text';
-        input.value = row[key] === null || row[key] === undefined ? '' : row[key];
-      }
-      input.id = 'edit-' + key;
-      input.name = key;
-      wrap.appendChild(input);
-      editFieldsEl.appendChild(wrap);
-    });
-
+  function openCreateModal(tabName, config) {
+    currentEdit = { mode: 'create', tabName, config, row: {} };
+    document.getElementById('admin-modal-title').textContent = 'Add new ' + (TAB_SINGULAR[tabName] || tabName);
+    editFieldsEl.innerHTML = '';
+    (config.createFields || config.editFields).forEach((key) => editFieldsEl.appendChild(buildField(key, config, {})));
     setStatus(editForm, '', '');
     editModal.classList.add('open');
   }
@@ -370,23 +403,38 @@
     if (e.key === 'Escape' && editModal.classList.contains('open')) closeEditModal();
   });
 
+  document.querySelectorAll('[data-admin-add]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.adminAdd;
+      openCreateModal(name, TABLE_CONFIGS[name]);
+    });
+  });
+
   editForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!currentEdit) return;
-    const { tabName, config, row } = currentEdit;
+    const { mode, tabName, config, row } = currentEdit;
+    const fields = mode === 'create' ? (config.createFields || config.editFields) : config.editFields;
     const fd = new FormData(editForm);
     const patch = {};
-    config.editFields.forEach((key) => {
+    fields.forEach((key) => {
       let v = fd.get(key);
       if (key === 'team_size' || key === 'amount_paid_inr') v = v === '' ? null : Number(v);
       patch[key] = v;
     });
 
-    setStatus(editForm, 'Saving…', 'pending');
-    const { error } = await sb.from(config.table).update(patch).eq('id', row.id);
-    if (error) { setStatus(editForm, error.message, 'error'); return; }
+    setStatus(editForm, mode === 'create' ? 'Adding…' : 'Saving…', 'pending');
 
-    await logAudit(config.table, row.id, 'update', row, Object.assign({}, row, patch));
+    if (mode === 'create') {
+      const { data: created, error } = await sb.from(config.table).insert(patch).select().single();
+      if (error) { setStatus(editForm, error.message, 'error'); return; }
+      await logAudit(config.table, created.id, 'insert', null, patch);
+    } else {
+      const { error } = await sb.from(config.table).update(patch).eq('id', row.id);
+      if (error) { setStatus(editForm, error.message, 'error'); return; }
+      await logAudit(config.table, row.id, 'update', row, Object.assign({}, row, patch));
+    }
+
     closeEditModal();
     loadTab(tabName, true);
   });
