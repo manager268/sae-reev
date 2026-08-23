@@ -22,11 +22,29 @@
          formType (team, judge, techteamStudent, techteamMentor,
          techteamSme, phase1PrevTeam, phase1NewTeam, phase1Individual)
          so the script knows which sheet tab to append to.
+
+  3. razorpay.keyId
+     The three team-registration forms (team, phase1PrevTeam,
+     phase1NewTeam) collect a ₹20,000 fee via Razorpay before they submit
+     — see js/registration-form.js. This is Razorpay's public "Key ID"
+     (safe to publish — it identifies your account, it can't move money on
+     its own). Leave it "" and those three forms stay locked with a
+     "payment isn't connected yet" note, same idea as endpoint above.
+       - The Key SECRET is a completely different thing and must NEVER go
+         in this file (or anywhere in this repo) — it lives only inside
+         the Apps Script backend (Code.gs), which is not part of git.
+         See REGISTRATION_SETUP.md.
+       - The actual fee amount is decided server-side in Code.gs, not by
+         anything in this file — this is just the public identifier
+         Razorpay's Checkout widget needs to open.
 */
 window.REGISTRATION_CONFIG = {
   // TEMPORARILY unlocked early for testing — see TESTING note below.
   // Real value to restore: "2026-08-25T00:00:00+05:30"
   opensAt: "2026-08-23T00:00:00+05:30",
   opensAtLabel: "25 Aug 2026",
-  endpoint: "https://script.google.com/macros/s/AKfycby9l4SXWkBPEVTOPsXZ3ZwIxeI6yViEEO8pjpqKeOG7aXdrr__95BzukcSw7uf5JkuqqQ/exec"
+  endpoint: "https://script.google.com/macros/s/AKfycby9l4SXWkBPEVTOPsXZ3ZwIxeI6yViEEO8pjpqKeOG7aXdrr__95BzukcSw7uf5JkuqqQ/exec",
+  razorpay: {
+    keyId: ""
+  }
 };
