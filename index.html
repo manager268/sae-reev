@@ -330,24 +330,26 @@
   <div class="lightbox-caption"></div>
 </div>
 
-<!-- Registration Phase 1 modal — replace each href="#" below with the category's
-     Google Form link once forms are configured. -->
+<!-- Registration Phase 1 modal — links are filled in (and unlocked) automatically
+     from assets/data/registration.js once REGISTRATION_CONFIG.opensAt passes
+     and a Google Form URL has been pasted in for each key. -->
 <div class="phase-modal" id="phase1-modal" role="dialog" aria-modal="true" aria-labelledby="phase1-modal-title">
   <div class="phase-modal-panel">
     <button class="phase-modal-close" type="button" aria-label="Close">&times;</button>
     <div class="sec-tag">Registration — Phase 1</div>
     <h3 id="phase1-modal-title">Which of these describes you?</h3>
     <p>Pick a category and you'll be taken to the REEV 4.0 registration form for it.</p>
+    <p class="phase-modal-status" data-reg-status></p>
     <div class="phase-modal-options">
-      <a class="phase-option" href="#" target="_blank" rel="noopener">
+      <a class="phase-option reg-locked" data-reg-link="phase1PrevTeam" aria-disabled="true">
         <span class="po-title">Previously Participated Team</span>
         <span class="po-desc">Colleges that competed in a past REEV edition</span>
       </a>
-      <a class="phase-option" href="#" target="_blank" rel="noopener">
+      <a class="phase-option reg-locked" data-reg-link="phase1NewTeam" aria-disabled="true">
         <span class="po-title">New / Upcoming Team</span>
         <span class="po-desc">First-time college teams joining REEV 4.0</span>
       </a>
-      <a class="phase-option" href="#" target="_blank" rel="noopener">
+      <a class="phase-option reg-locked" data-reg-link="phase1Individual" aria-disabled="true">
         <span class="po-title">Individual</span>
         <span class="po-desc">Registering on your own, not yet attached to a team</span>
       </a>
@@ -360,6 +362,7 @@
 </div>
 
 <script src="assets/data/quick-links.js"></script>
+<script src="assets/data/registration.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
