@@ -720,7 +720,7 @@
   .hero-dot.active::before{background:var(--orange-bright);transform:scale(1.25);}
   .hero-dot:hover::before{background:rgba(250,246,238,0.7);}
 
-  .hero-quickbar{padding:32px 0 8px;position:relative;z-index:1;}
+  .hero-quickbar{padding-top:32px;padding-bottom:8px;position:relative;z-index:1;}
   .hero-quickbar-inner{
     display:flex;justify-content:space-between;align-items:center;gap:28px;flex-wrap:wrap;
     padding-bottom:28px;border-bottom:1px solid var(--line);
@@ -740,8 +740,8 @@
   @media (max-width:700px){
     .hero-baja{height:min(70vh,560px);}
     .hero-quickbar-inner{flex-direction:column;align-items:flex-start;}
-    .hero-quick-actions{width:100%;}
-    .hero-quick-actions a{flex:1;text-align:center;}
+    .hero-quick-actions{width:100%;flex-direction:column;}
+    .hero-quick-actions a, .hero-quick-actions button{width:100%;text-align:center;}
     .hero-quick-stats{flex-direction:column;align-items:flex-start;row-gap:10px;}
     .hero-quick-stats span{
       width:100%;border-right:none;padding-right:0;
