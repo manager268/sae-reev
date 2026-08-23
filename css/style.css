@@ -390,14 +390,15 @@
 
   /* Registration category picker modal */
   .phase-modal{
-    display:none;position:fixed;inset:0;z-index:100;
-    background:rgba(20,16,12,0.72);align-items:center;justify-content:center;padding:24px;
+    display:none;position:fixed;inset:0;z-index:100;overflow-y:auto;
+    background:rgba(20,16,12,0.72);justify-content:center;padding:40px 24px;
   }
   .phase-modal.open{display:flex;}
   .phase-modal-panel{
     position:relative;width:100%;max-width:520px;background:var(--paper);
     border:1px solid var(--line-strong);border-radius:6px;padding:40px 36px;
     box-shadow:0 24px 60px rgba(20,16,12,0.3);
+    margin:auto 0; /* centers when short, scrolls into view from the top when taller than the viewport */
   }
   .phase-modal-panel h3{font-family:var(--display);font-weight:600;font-size:clamp(20px,2.6vw,26px);margin:6px 0 10px;}
   .phase-modal-panel .phase-step > p{color:var(--steel);font-size:14.5px;margin-bottom:24px;}
