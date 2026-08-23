@@ -292,7 +292,7 @@
   .promo-strip{background:var(--panel-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
   .promo-strip-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:16px 32px;font-size:14px;color:var(--steel);}
   .promo-strip-inner strong{color:var(--ink);}
-  .promo-strip-link{font-family:var(--telemetry);font-weight:600;font-size:14px;color:var(--orange-bright);white-space:nowrap;transition:color .2s var(--ease-out-expo);}
+  .promo-strip-link{font-family:var(--telemetry);font-weight:600;font-size:14px;color:var(--orange-bright);transition:color .2s var(--ease-out-expo);}
   .promo-strip-link:hover{color:var(--orange);text-decoration:underline;}
 
   /* PARTNER TIERS */
@@ -442,6 +442,10 @@
     .podium{flex-direction:column;align-items:center;}
     .podium-step{order:0 !important;width:100%;max-width:280px;padding-top:26px !important;}
     .gallery-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:600px){
+    .footer-grid{grid-template-columns:1fr;gap:36px;}
+    .footer-bottom{flex-direction:column;align-items:flex-start;}
   }
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
