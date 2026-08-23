@@ -132,10 +132,6 @@
             <input type="text" id="team-name" name="teamName" required>
           </div>
           <div class="field">
-            <label for="team-size">Team size <span class="req">*</span></label>
-            <input type="number" id="team-size" name="teamSize" min="1" required>
-          </div>
-          <div class="field">
             <label for="team-captain">Team captain name <span class="req">*</span></label>
             <input type="text" id="team-captain" name="captainName" required>
           </div>
@@ -147,6 +143,21 @@
             <label for="team-phone">Captain phone <span class="req">*</span></label>
             <input type="tel" id="team-phone" name="captainPhone" required>
           </div>
+          <div class="field">
+            <label for="team-size">Team size (incl. captain)</label>
+            <input type="text" id="team-size" name="teamSize" readonly data-team-size>
+          </div>
+        </div>
+
+        <div class="member-section">
+          <label>Other team members</label>
+          <p class="member-hint">Add every member besides the captain — name, branch, year, email and phone for each.</p>
+          <div class="member-list" data-member-list></div>
+          <button type="button" class="member-add" data-member-add>+ Add member</button>
+        </div>
+        <input type="hidden" name="participants" data-participants-json>
+
+        <div class="form-grid" style="margin-top:20px;">
           <div class="field field-wide">
             <label for="team-notes">Anything else we should know?</label>
             <textarea id="team-notes" name="notes"></textarea>
@@ -157,6 +168,17 @@
           <p class="form-status" data-form-status></p>
         </div>
       </form>
+
+      <template id="team-member-template">
+        <div class="member-row">
+          <input type="text" placeholder="Full name" data-member-field="name">
+          <input type="text" placeholder="Branch / Dept" data-member-field="branch">
+          <input type="text" placeholder="Year" data-member-field="year">
+          <input type="email" placeholder="Email" data-member-field="email">
+          <input type="tel" placeholder="Phone" data-member-field="phone">
+          <button type="button" class="member-remove" data-member-remove aria-label="Remove this member">&times;</button>
+        </div>
+      </template>
     </div>
 
     <div class="reg-tab-panel" id="tab-judge">
@@ -369,6 +391,7 @@
 <script src="assets/data/quick-links.js"></script>
 <script src="assets/data/registration.js"></script>
 <script src="js/main.js"></script>
+<script src="js/team-members.js"></script>
 <script src="js/registration-form.js"></script>
 </body>
 </html>

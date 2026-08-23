@@ -15,6 +15,12 @@ https://docs.google.com/spreadsheets/d/1-0hE2gt60LVAvYnv5sCrnGQUju06xUv6UPgfLWCH
 > column from those two tabs' header rows (and shift the columns after it
 > left, so they still line up with the field order in the table below), then
 > redeploy per Step 3 — the field order in the script has to match the sheet.
+>
+> **Team tab specifically**: the form now collects every team member, not
+> just a headcount. Add a `Participants` column to the `Team` tab (right
+> before `Notes`) — see the updated header row below. "Team Size" is no
+> longer manually typed; it's counted automatically from how many member
+> rows were filled in, so nothing needs to change about that column itself.
 
 Do these steps once. Nothing on the live site works until step 3 is done —
 forms stay locked with a "not connected yet" message until then.
@@ -47,7 +53,7 @@ order — Timestamp is filled in automatically, don't type it):
 
 | Tab | Header row (row 1) |
 |---|---|
-| `Team` | Timestamp, College / Institution Name, Team Name, Team Size, Captain Name, Captain Email, Captain Phone, Notes |
+| `Team` | Timestamp, College / Institution Name, Team Name, Team Size, Captain Name, Captain Email, Captain Phone, Participants, Notes |
 | `Judge` | Timestamp, Full Name, Organisation, Area of Expertise, Email, Phone, Notes |
 | `Student` | Timestamp, Full Name, College, Year of Study, Area of Interest, Email, Phone |
 | `Mentor` | Timestamp, Full Name, Organisation/Institution, Area of Expertise, Email, Phone, Notes |
@@ -79,7 +85,7 @@ order — Timestamp is filled in automatically, don't type it):
 var FORM_CONFIG = {
   team: {
     sheet: 'Team',
-    fields: ['collegeName', 'teamName', 'teamSize', 'captainName', 'captainEmail', 'captainPhone', 'notes'],
+    fields: ['collegeName', 'teamName', 'teamSize', 'captainName', 'captainEmail', 'captainPhone', 'participants', 'notes'],
     required: ['collegeName', 'teamName', 'teamSize', 'captainName', 'captainEmail', 'captainPhone']
   },
   judge: {
@@ -149,7 +155,11 @@ function doPost(e) {
     }
 
     var row = [new Date()];
-    config.fields.forEach(function (f) { row.push(data[f] || ''); });
+    config.fields.forEach(function (f) {
+      var val = data[f] || '';
+      if (f === 'participants') val = formatParticipants(val);
+      row.push(val);
+    });
     sheet.appendRow(row);
 
     logAttempt(formType, data, 'OK', '');
@@ -157,6 +167,28 @@ function doPost(e) {
   } catch (err) {
     logAttempt(formType, data, 'ERROR', String(err));
     return jsonOut({ ok: false, error: String(err) });
+  }
+}
+
+// Turns the Team form's participants JSON (an array of {name, branch, year,
+// email, phone}) into a readable numbered list for the sheet cell, e.g.:
+//   1. Asha Rao — CSE — Yr 3 — asha@x.com — 98765xxxxx
+//   2. ...
+// Falls back to the raw string if it isn't valid JSON for any reason.
+function formatParticipants(json) {
+  try {
+    var members = JSON.parse(json || '[]');
+    if (!members.length) return '';
+    return members.map(function (m, i) {
+      var parts = [m.name];
+      if (m.branch) parts.push(m.branch);
+      if (m.year) parts.push('Yr ' + m.year);
+      if (m.email) parts.push(m.email);
+      if (m.phone) parts.push(m.phone);
+      return (i + 1) + '. ' + parts.join(' — ');
+    }).join('\n');
+  } catch (err) {
+    return json || '';
   }
 }
 

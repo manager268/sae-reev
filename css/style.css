@@ -580,8 +580,37 @@
   .reg-form select:disabled,
   .reg-form textarea:disabled,
   .reg-form button:disabled{opacity:.5;cursor:not-allowed;}
+  .reg-form input[readonly]{background:var(--panel-2);color:var(--steel);}
   .reg-form textarea{resize:vertical;min-height:80px;}
   .reg-form .form-actions{margin-top:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+
+  /* Repeatable team-member rows (Team form) */
+  .member-section{margin-top:24px;padding-top:22px;border-top:1px solid var(--line-strong);}
+  .member-section > label{font-family:var(--mono);font-size:12px;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;}
+  .member-hint{font-size:13px;color:var(--steel);margin:6px 0 14px;}
+  .member-list{display:flex;flex-direction:column;gap:10px;}
+  .member-row{
+    display:grid;grid-template-columns:1.3fr 1fr .7fr 1.2fr 1fr auto;gap:10px;align-items:center;
+  }
+  .member-row input{
+    font-family:var(--body);font-size:14px;color:var(--ink);background:var(--paper);
+    border:1px solid var(--line-strong);border-radius:3px;padding:10px 12px;width:100%;
+  }
+  .member-row input:focus{outline:2px solid var(--orange-bright);outline-offset:1px;border-color:var(--orange-bright);}
+  .member-remove{
+    background:none;border:1px solid var(--line-strong);color:var(--steel);border-radius:3px;
+    width:34px;height:34px;cursor:pointer;font-size:16px;line-height:1;
+  }
+  .member-remove:hover{border-color:#c0392b;color:#c0392b;}
+  .member-add{
+    margin-top:12px;background:none;border:1px dashed var(--line-strong);color:var(--steel);
+    border-radius:3px;padding:10px 16px;font-family:var(--mono);font-size:12.5px;cursor:pointer;
+  }
+  .member-add:hover{border-color:var(--orange-bright);color:var(--orange-bright);}
+  @media (max-width:760px){
+    .member-row{grid-template-columns:1fr 1fr;}
+    .member-remove{grid-column:1 / -1;justify-self:end;width:auto;padding:6px 14px;}
+  }
   .form-status{font-family:var(--mono);font-size:12.5px;margin:0;}
   .form-status-locked{color:var(--steel);}
   .form-status-pending{color:var(--steel);}
