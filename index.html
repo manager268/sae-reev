@@ -381,16 +381,40 @@
             <label for="pt-email">Email <span class="req">*</span></label>
             <input type="email" id="pt-email" name="email" required>
           </div>
-          <div class="field field-wide">
+          <div class="field">
             <label for="pt-phone">Phone <span class="req">*</span></label>
             <input type="tel" id="pt-phone" name="phone" required>
           </div>
+          <div class="field">
+            <label for="pt-size">Team size (incl. contact person)</label>
+            <input type="text" id="pt-size" name="teamSize" readonly data-team-size>
+          </div>
         </div>
+
+        <div class="member-section">
+          <label>Other team members</label>
+          <p class="member-hint">Add every member besides the contact person — name, branch, year, email and phone for each.</p>
+          <div class="member-list" data-member-list data-member-template="pt-member-template"></div>
+          <button type="button" class="member-add" data-member-add>+ Add member</button>
+        </div>
+        <input type="hidden" name="participants" data-participants-json>
+
         <div class="form-actions">
           <button type="submit" class="btn-primary">Submit ↗</button>
           <p class="form-status" data-form-status></p>
         </div>
       </form>
+
+      <template id="pt-member-template">
+        <div class="member-row">
+          <input type="text" placeholder="Full name" data-member-field="name">
+          <input type="text" placeholder="Branch / Dept" data-member-field="branch">
+          <input type="text" placeholder="Year" data-member-field="year">
+          <input type="email" placeholder="Email" data-member-field="email">
+          <input type="tel" placeholder="Phone" data-member-field="phone">
+          <button type="button" class="member-remove" data-member-remove aria-label="Remove this member">&times;</button>
+        </div>
+      </template>
     </div>
 
     <div class="phase-step" data-phase-step="newteam">
@@ -414,16 +438,40 @@
             <label for="nt-email">Email <span class="req">*</span></label>
             <input type="email" id="nt-email" name="email" required>
           </div>
-          <div class="field field-wide">
+          <div class="field">
             <label for="nt-phone">Phone <span class="req">*</span></label>
             <input type="tel" id="nt-phone" name="phone" required>
           </div>
+          <div class="field">
+            <label for="nt-size">Team size (incl. contact person)</label>
+            <input type="text" id="nt-size" name="teamSize" readonly data-team-size>
+          </div>
         </div>
+
+        <div class="member-section">
+          <label>Other team members</label>
+          <p class="member-hint">Add every member besides the contact person — name, branch, year, email and phone for each.</p>
+          <div class="member-list" data-member-list data-member-template="nt-member-template"></div>
+          <button type="button" class="member-add" data-member-add>+ Add member</button>
+        </div>
+        <input type="hidden" name="participants" data-participants-json>
+
         <div class="form-actions">
           <button type="submit" class="btn-primary">Submit ↗</button>
           <p class="form-status" data-form-status></p>
         </div>
       </form>
+
+      <template id="nt-member-template">
+        <div class="member-row">
+          <input type="text" placeholder="Full name" data-member-field="name">
+          <input type="text" placeholder="Branch / Dept" data-member-field="branch">
+          <input type="text" placeholder="Year" data-member-field="year">
+          <input type="email" placeholder="Email" data-member-field="email">
+          <input type="tel" placeholder="Phone" data-member-field="phone">
+          <button type="button" class="member-remove" data-member-remove aria-label="Remove this member">&times;</button>
+        </div>
+      </template>
     </div>
 
     <div class="phase-step" data-phase-step="individual">
@@ -472,6 +520,7 @@
 <script src="assets/data/quick-links.js"></script>
 <script src="assets/data/registration.js"></script>
 <script src="js/main.js"></script>
+<script src="js/team-members.js"></script>
 <script src="js/registration-form.js"></script>
 </body>
 </html>

@@ -16,11 +16,12 @@ https://docs.google.com/spreadsheets/d/1-0hE2gt60LVAvYnv5sCrnGQUju06xUv6UPgfLWCH
 > left, so they still line up with the field order in the table below), then
 > redeploy per Step 3 — the field order in the script has to match the sheet.
 >
-> **Team tab specifically**: the form now collects every team member, not
-> just a headcount. Add a `Participants` column to the `Team` tab (right
-> before `Notes`) — see the updated header row below. "Team Size" is no
-> longer manually typed; it's counted automatically from how many member
-> rows were filled in, so nothing needs to change about that column itself.
+> **`Phase1_PrevTeam` and `Phase1_NewTeam` tabs specifically**: those two
+> forms now also collect every team member, the same way the Team form
+> already does. Add `Team Size` and `Participants` columns to both tabs
+> (at the end — they didn't have either column before) — see the updated
+> header rows below. Team size is never manually typed; it's counted
+> automatically from how many member rows were filled in.
 
 Do these steps once. Nothing on the live site works until step 3 is done —
 forms stay locked with a "not connected yet" message until then.
@@ -58,8 +59,8 @@ order — Timestamp is filled in automatically, don't type it):
 | `Student` | Timestamp, Full Name, College, Year of Study, Area of Interest, Email, Phone |
 | `Mentor` | Timestamp, Full Name, Organisation/Institution, Area of Expertise, Email, Phone, Notes |
 | `SME` | Timestamp, Full Name, Organisation, Area of Expertise, Email, Phone |
-| `Phase1_PrevTeam` | Timestamp, College Name, Team Name (Past), Edition Competed In, Contact Name, Email, Phone |
-| `Phase1_NewTeam` | Timestamp, College Name, Intended Team Name, Contact Name, Email, Phone |
+| `Phase1_PrevTeam` | Timestamp, College Name, Team Name (Past), Edition Competed In, Contact Name, Email, Phone, Team Size, Participants |
+| `Phase1_NewTeam` | Timestamp, College Name, Intended Team Name, Contact Name, Email, Phone, Team Size, Participants |
 | `Phase1_Individual` | Timestamp, Full Name, College, Year of Study, Reason for Interest, Email, Phone |
 | `Logs` | Timestamp, Form Type, Status, Error, Raw Data (JSON) |
 
@@ -110,12 +111,12 @@ var FORM_CONFIG = {
   },
   phase1PrevTeam: {
     sheet: 'Phase1_PrevTeam',
-    fields: ['collegeName', 'teamName', 'edition', 'contactName', 'email', 'phone'],
+    fields: ['collegeName', 'teamName', 'edition', 'contactName', 'email', 'phone', 'teamSize', 'participants'],
     required: ['collegeName', 'teamName', 'edition', 'contactName', 'email', 'phone']
   },
   phase1NewTeam: {
     sheet: 'Phase1_NewTeam',
-    fields: ['collegeName', 'teamName', 'contactName', 'email', 'phone'],
+    fields: ['collegeName', 'teamName', 'contactName', 'email', 'phone', 'teamSize', 'participants'],
     required: ['collegeName', 'teamName', 'contactName', 'email', 'phone']
   },
   phase1Individual: {
