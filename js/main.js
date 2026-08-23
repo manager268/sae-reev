@@ -8,7 +8,7 @@
   const car = loader.querySelector('.racing-car');
   const speedLines = loader.querySelector('.speed-lines');
 
-  const DRIVE_MS = 756;                          // matches the CSS animation-duration
+  const DRIVE_MS = 1800;                         // matches the CSS animation-duration
   const FADE_AT_MS = Math.round(DRIVE_MS * 0.6); // start fading once the car is ~60% across
 
   function restartDrive() {
@@ -147,20 +147,57 @@ if (menuBtn && mobileNav) {
   if (slides.length < 2) return;
   const dots = document.querySelectorAll('.hero-dot');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const heroVideo = document.querySelector('.hero-slideshow video.slide');
+  const videoIndex = Array.prototype.indexOf.call(slides, heroVideo);
+  const PHOTO_MS = 5000;
+  const VIDEO_MS = 9000; // ~one full loop of the ~8.7s flag-off clip before advancing
+  const FADE_MS = 1400;   // matches the .slide opacity transition duration in css/style.css
   let current = 0;
 
+  // Respect reduced-motion: don't autoplay the flag-off clip, just show its poster frame.
+  if (reduceMotion && heroVideo) {
+    heroVideo.pause();
+    heroVideo.removeAttribute('autoplay');
+  }
+
   function goTo(index) {
-    slides[current].classList.remove('active');
-    dots[current]?.classList.remove('active');
+    const prev = current;
+    slides[prev].classList.remove('active');
+    dots[prev]?.classList.remove('active');
     current = index;
     slides[current].classList.add('active');
     dots[current]?.classList.add('active');
+
+    if (heroVideo && !reduceMotion) {
+      if (current === videoIndex) {
+        // Always restart cleanly from the flag-off moment when its slide comes up.
+        heroVideo.currentTime = 0;
+        heroVideo.play().catch(() => {});
+      } else if (prev === videoIndex) {
+        // Keep playing through the fade-out so the dissolve reads as motion,
+        // not a frozen frame; only pause + rewind once fully hidden.
+        setTimeout(() => {
+          if (current !== videoIndex) {
+            heroVideo.pause();
+            heroVideo.currentTime = 0;
+          }
+        }, FADE_MS);
+      }
+    }
   }
 
   dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
 
   if (reduceMotion) return;
-  setInterval(() => goTo((current + 1) % slides.length), 5000);
+
+  function scheduleNext() {
+    const dwell = current === videoIndex ? VIDEO_MS : PHOTO_MS;
+    setTimeout(() => {
+      goTo((current + 1) % slides.length);
+      scheduleNext();
+    }, dwell);
+  }
+  scheduleNext();
 })();
 
 (function () {
@@ -255,6 +292,25 @@ if (menuBtn && mobileNav) {
     const target = document.querySelector(`.reg-tab-btn[data-tab="${hashTab}"]`);
     if (target) activate(target);
   }
+})();
+
+/* Registration Phase 1 modal — opened from the hero "Register your college"
+   button and the "Registration — Phase 1" button in the footer CTA. */
+(function () {
+  const modal = document.getElementById('phase1-modal');
+  const openers = document.querySelectorAll('.js-open-phase1');
+  if (!modal || !openers.length) return;
+  const closeBtn = modal.querySelector('.phase-modal-close');
+
+  function open() { modal.classList.add('open'); }
+  function close() { modal.classList.remove('open'); }
+
+  openers.forEach(btn => btn.addEventListener('click', open));
+  closeBtn.addEventListener('click', close);
+  modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) close();
+  });
 })();
 
 /* Back-to-top button */

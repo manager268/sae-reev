@@ -108,7 +108,7 @@
   <div class="countdown-inner">
     <div class="cs-left">
       <span class="edition-pill">Edition 4.0</span>
-      <span class="cs-label">Registration closes 10 Sep 2026</span>
+      <span class="cs-label">First phase of registration closes 10 Sep 2026</span>
     </div>
     <div class="cs-timer" id="reg-countdown" aria-live="polite">
       <div class="cs-unit"><span class="cs-num" id="cd-days">--</span><span class="cs-unit-label">Days</span></div>
@@ -121,7 +121,11 @@
 
 <section class="hero-baja">
   <div class="hero-slideshow" aria-hidden="true">
-    <div class="slide active" style="background-image:url('assets/images/hero-convoy.jpg')"></div>
+    <video class="slide active" autoplay muted loop playsinline preload="metadata" poster="assets/images/hero-video-poster.jpg">
+      <source src="assets/video/hero-reev2026-flagoff.mp4" type="video/mp4">
+    </video>
+    <div class="slide" style="background-image:url('assets/images/hero-award-archway.jpg')"></div>
+    <div class="slide" style="background-image:url('assets/images/hero-convoy.jpg')"></div>
     <div class="slide" style="background-image:url('assets/images/hero-reev-banner.jpg')"></div>
     <div class="slide" style="background-image:url('assets/images/hero-red-run.jpg')"></div>
     <div class="slide" style="background-image:url('assets/images/hero-team-lineup-night.jpg')"></div>
@@ -131,10 +135,12 @@
     <h1>Range Extended<br>Electric <span class="accent">Vehicle</span></h1>
   </div>
   <div class="hero-dots" role="tablist" aria-label="Hero slides">
-    <button class="hero-dot active" type="button" data-slide="0" aria-label="Slide 1"></button>
+    <button class="hero-dot active" type="button" data-slide="0" aria-label="Slide 1 — flag-off video"></button>
     <button class="hero-dot" type="button" data-slide="1" aria-label="Slide 2"></button>
     <button class="hero-dot" type="button" data-slide="2" aria-label="Slide 3"></button>
     <button class="hero-dot" type="button" data-slide="3" aria-label="Slide 4"></button>
+    <button class="hero-dot" type="button" data-slide="4" aria-label="Slide 5"></button>
+    <button class="hero-dot" type="button" data-slide="5" aria-label="Slide 6"></button>
   </div>
 </section>
 
@@ -144,7 +150,7 @@
       REEV is India's own OEM-style vehicle development competition — engineering students design, simulate, and build a <strong>series-hybrid urban mobility vehicle</strong> from the ground up, mentored by working engineers from TVS Motor, Bosch, TCS, Volvo and more.
     </div>
     <div class="hero-quick-actions">
-      <a href="register.html#team" class="btn-primary">Register your college</a>
+      <button type="button" class="btn-primary js-open-phase1">Register your college</button>
       <a href="#overview" class="btn-ghost">See how REEV works ↓</a>
     </div>
   </div>
@@ -261,8 +267,8 @@
   <h2>Bring your team to REEV 4.0.</h2>
   <p>For registration queries, technical session details, or sponsorship conversations — reach the team directly.</p>
   <div class="cta-buttons">
-    <a href="mailto:manager@saeibs.org" class="btn-primary">manager@saeibs.org</a>
-    <a href="https://www.saeindia.org/bangaluru-section/reev/" class="btn-ghost">Official SAEINDIA REEV page ↗</a>
+    <button type="button" class="btn-primary js-open-phase1">Registration — Phase 1</button>
+    <button type="button" class="btn-ghost btn-disabled" aria-disabled="true" title="Opens once Phase 1 closes">Registration — Phase 2 <span class="btn-disabled-tag">Opens soon</span></button>
   </div>
   <div class="contact-line reveal">
     <span class="cl-name">Suyash Tripathi</span>
@@ -322,6 +328,31 @@
   <button class="lightbox-close" type="button" aria-label="Close image">&times;</button>
   <img src="" alt="">
   <div class="lightbox-caption"></div>
+</div>
+
+<!-- Registration Phase 1 modal — replace each href="#" below with the category's
+     Google Form link once forms are configured. -->
+<div class="phase-modal" id="phase1-modal" role="dialog" aria-modal="true" aria-labelledby="phase1-modal-title">
+  <div class="phase-modal-panel">
+    <button class="phase-modal-close" type="button" aria-label="Close">&times;</button>
+    <div class="sec-tag">Registration — Phase 1</div>
+    <h3 id="phase1-modal-title">Which of these describes you?</h3>
+    <p>Pick a category and you'll be taken to the REEV 4.0 registration form for it.</p>
+    <div class="phase-modal-options">
+      <a class="phase-option" href="#" target="_blank" rel="noopener">
+        <span class="po-title">Previously Participated Team</span>
+        <span class="po-desc">Colleges that competed in a past REEV edition</span>
+      </a>
+      <a class="phase-option" href="#" target="_blank" rel="noopener">
+        <span class="po-title">New / Upcoming Team</span>
+        <span class="po-desc">First-time college teams joining REEV 4.0</span>
+      </a>
+      <a class="phase-option" href="#" target="_blank" rel="noopener">
+        <span class="po-title">Individual</span>
+        <span class="po-desc">Registering on your own, not yet attached to a team</span>
+      </a>
+    </div>
+  </div>
 </div>
 
 <div class="to-top" role="button" tabindex="0" aria-label="Back to top">
