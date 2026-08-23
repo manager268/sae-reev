@@ -112,29 +112,95 @@
     </div>
 
     <div class="reg-tab-panel active" id="tab-team">
-      <div class="reg-strip reveal">
+      <div class="reg-strip reveal" style="margin-bottom:28px;">
         <div class="reg-row">
           <div class="reg-item"><div class="ri-date">25 Aug</div><div class="ri-label">Registration opens</div></div>
           <div class="reg-item"><div class="ri-date">10 Sep</div><div class="ri-label">Registration closes</div></div>
           <div class="reg-item"><div class="ri-date">12 Sep</div><div class="ri-label">First technical session</div></div>
           <div class="reg-item"><div class="ri-date">2026–27</div><div class="ri-label">Season runs through</div></div>
         </div>
-        <div class="reg-cta">
-          <div>
-            <span class="reg-cta-label">Ready to lock in your slot?</span>
-            <span class="reg-cta-detail">Email your college name, team size and category — we'll send the registration form and technical session details.</span>
-          </div>
-          <a class="btn-primary reg-locked" data-reg-link="team" aria-disabled="true">Register your team ↗</a>
-        </div>
       </div>
+
+      <form class="reg-form reveal" data-reg-form="team">
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="team-college">College / Institution name <span class="req">*</span></label>
+            <input type="text" id="team-college" name="collegeName" required>
+          </div>
+          <div class="field">
+            <label for="team-name">Team name <span class="req">*</span></label>
+            <input type="text" id="team-name" name="teamName" required>
+          </div>
+          <div class="field">
+            <label for="team-category">Category <span class="req">*</span></label>
+            <select id="team-category" name="category" required>
+              <option value="" disabled selected>Choose one</option>
+              <option value="REEV">REEV</option>
+              <option value="e-Baja">e-Baja</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="team-size">Team size <span class="req">*</span></label>
+            <input type="number" id="team-size" name="teamSize" min="1" required>
+          </div>
+          <div class="field">
+            <label for="team-captain">Team captain name <span class="req">*</span></label>
+            <input type="text" id="team-captain" name="captainName" required>
+          </div>
+          <div class="field">
+            <label for="team-email">Captain email <span class="req">*</span></label>
+            <input type="email" id="team-email" name="captainEmail" required>
+          </div>
+          <div class="field">
+            <label for="team-phone">Captain phone <span class="req">*</span></label>
+            <input type="tel" id="team-phone" name="captainPhone" required>
+          </div>
+          <div class="field field-wide">
+            <label for="team-notes">Anything else we should know?</label>
+            <textarea id="team-notes" name="notes"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit team registration ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
     </div>
 
     <div class="reg-tab-panel" id="tab-judge">
-      <div class="coming-soon reveal">
-        <h3>Judge registration</h3>
-        <p>REEV recruits practicing engineers and academics to judge design presentations, hybrid bench evaluations and finals. Email your name, organisation and area of expertise.</p>
-        <a class="btn-primary reg-locked" data-reg-link="judge" aria-disabled="true">Register as a judge ↗</a>
-      </div>
+      <p class="reveal" style="color:var(--steel);font-size:14.5px;margin-bottom:22px;max-width:640px;">REEV recruits practicing engineers and academics to judge design presentations, hybrid bench evaluations and finals.</p>
+      <form class="reg-form reveal" data-reg-form="judge">
+        <div class="form-grid">
+          <div class="field">
+            <label for="judge-name">Full name <span class="req">*</span></label>
+            <input type="text" id="judge-name" name="fullName" required>
+          </div>
+          <div class="field">
+            <label for="judge-org">Organisation <span class="req">*</span></label>
+            <input type="text" id="judge-org" name="organisation" required>
+          </div>
+          <div class="field">
+            <label for="judge-expertise">Area of expertise <span class="req">*</span></label>
+            <input type="text" id="judge-expertise" name="expertise" required>
+          </div>
+          <div class="field">
+            <label for="judge-email">Email <span class="req">*</span></label>
+            <input type="email" id="judge-email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="judge-phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="judge-phone" name="phone" required>
+          </div>
+          <div class="field field-wide">
+            <label for="judge-notes">Availability notes</label>
+            <textarea id="judge-notes" name="notes"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit judge registration ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
     </div>
 
     <div class="reg-tab-panel" id="tab-techteam">
@@ -143,19 +209,114 @@
           <div class="rc-tag">Student</div>
           <h3>Volunteer / Tech Team</h3>
           <p>Run registration desks, technical sessions and finals-day logistics as part of the student Event Support Team.</p>
-          <a class="btn-primary reg-locked" data-reg-link="techteamStudent" aria-disabled="true">Register as a Student ↗</a>
+          <form class="reg-form reg-form-compact" data-reg-form="techteamStudent">
+            <div class="form-grid">
+              <div class="field">
+                <label for="student-name">Full name <span class="req">*</span></label>
+                <input type="text" id="student-name" name="fullName" required>
+              </div>
+              <div class="field">
+                <label for="student-college">College <span class="req">*</span></label>
+                <input type="text" id="student-college" name="college" required>
+              </div>
+              <div class="field">
+                <label for="student-year">Year of study <span class="req">*</span></label>
+                <input type="text" id="student-year" name="year" required>
+              </div>
+              <div class="field">
+                <label for="student-interest">Area of interest <span class="req">*</span></label>
+                <select id="student-interest" name="interest" required>
+                  <option value="" disabled selected>Choose one</option>
+                  <option value="Registration desk">Registration desk</option>
+                  <option value="Technical sessions">Technical sessions</option>
+                  <option value="Finals-day logistics">Finals-day logistics</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="student-email">Email <span class="req">*</span></label>
+                <input type="email" id="student-email" name="email" required>
+              </div>
+              <div class="field">
+                <label for="student-phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="student-phone" name="phone" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Register as a Student ↗</button>
+              <p class="form-status" data-form-status></p>
+            </div>
+          </form>
         </div>
         <div class="role-card">
           <div class="rc-tag">Mentor</div>
           <h3>Faculty &amp; Industry Mentor</h3>
           <p>Guide a team end-to-end through the season — design reviews, simulation checkpoints and build sign-off.</p>
-          <a class="btn-primary reg-locked" data-reg-link="techteamMentor" aria-disabled="true">Register as a Mentor ↗</a>
+          <form class="reg-form reg-form-compact" data-reg-form="techteamMentor">
+            <div class="form-grid">
+              <div class="field">
+                <label for="mentor-name">Full name <span class="req">*</span></label>
+                <input type="text" id="mentor-name" name="fullName" required>
+              </div>
+              <div class="field">
+                <label for="mentor-org">Organisation/Institution <span class="req">*</span></label>
+                <input type="text" id="mentor-org" name="organisation" required>
+              </div>
+              <div class="field">
+                <label for="mentor-expertise">Area of expertise <span class="req">*</span></label>
+                <input type="text" id="mentor-expertise" name="expertise" required>
+              </div>
+              <div class="field">
+                <label for="mentor-email">Email <span class="req">*</span></label>
+                <input type="email" id="mentor-email" name="email" required>
+              </div>
+              <div class="field">
+                <label for="mentor-phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="mentor-phone" name="phone" required>
+              </div>
+              <div class="field">
+                <label for="mentor-notes">Notes</label>
+                <textarea id="mentor-notes" name="notes"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Register as a Mentor ↗</button>
+              <p class="form-status" data-form-status></p>
+            </div>
+          </form>
         </div>
         <div class="role-card">
           <div class="rc-tag">SME</div>
           <h3>Subject Matter Expert</h3>
           <p>Judge design presentations, hybrid bench evaluations and finals, or advise on a specific technical area.</p>
-          <a class="btn-primary reg-locked" data-reg-link="techteamSme" aria-disabled="true">Register as an SME ↗</a>
+          <form class="reg-form reg-form-compact" data-reg-form="techteamSme">
+            <div class="form-grid">
+              <div class="field">
+                <label for="sme-name">Full name <span class="req">*</span></label>
+                <input type="text" id="sme-name" name="fullName" required>
+              </div>
+              <div class="field">
+                <label for="sme-org">Organisation <span class="req">*</span></label>
+                <input type="text" id="sme-org" name="organisation" required>
+              </div>
+              <div class="field">
+                <label for="sme-expertise">Area of expertise <span class="req">*</span></label>
+                <input type="text" id="sme-expertise" name="expertise" required>
+              </div>
+              <div class="field">
+                <label for="sme-email">Email <span class="req">*</span></label>
+                <input type="email" id="sme-email" name="email" required>
+              </div>
+              <div class="field">
+                <label for="sme-phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="sme-phone" name="phone" required>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn-primary">Register as an SME ↗</button>
+              <p class="form-status" data-form-status></p>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -216,5 +377,6 @@
 <script src="assets/data/quick-links.js"></script>
 <script src="assets/data/registration.js"></script>
 <script src="js/main.js"></script>
+<script src="js/registration-form.js"></script>
 </body>
 </html>

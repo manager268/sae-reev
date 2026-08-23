@@ -294,61 +294,25 @@ if (menuBtn && mobileNav) {
   }
 })();
 
-/* Registration link gating — built from assets/data/registration.js
-   (window.REGISTRATION_CONFIG). Every registration button/link in the site
-   carries data-reg-link="<key>" instead of a real href. Until opensAt, every
-   one of them is shown locked. From opensAt on, each is filled in from
-   REGISTRATION_CONFIG.links[key] — or, if that link hasn't been pasted in
-   yet, left locked with a "link coming soon" note instead of a dead href. */
-(function () {
-  const cfg = window.REGISTRATION_CONFIG;
-  const nodes = document.querySelectorAll('[data-reg-link]');
-  if (!cfg || !nodes.length) return;
-
-  const isOpen = Date.now() >= new Date(cfg.opensAt).getTime();
-
-  function lock(el, reason) {
-    el.classList.add('reg-locked');
-    el.setAttribute('aria-disabled', 'true');
-    el.title = reason;
-    el.removeAttribute('href');
-  }
-
-  nodes.forEach((el) => {
-    const url = cfg.links[el.dataset.regLink];
-
-    if (isOpen && url) {
-      el.href = url;
-      el.target = '_blank';
-      el.rel = 'noopener';
-      el.classList.remove('reg-locked');
-      el.removeAttribute('aria-disabled');
-      el.removeAttribute('title');
-      return;
-    }
-
-    lock(el, isOpen
-      ? 'Registration form link coming soon'
-      : `Registration opens ${cfg.opensAtLabel}`);
-  });
-
-  // Also flip any status text (e.g. the note in the Phase 1 modal).
-  document.querySelectorAll('[data-reg-status]').forEach((el) => {
-    el.textContent = isOpen
-      ? ''
-      : `Registration opens ${cfg.opensAtLabel} — check back then.`;
-  });
-})();
+/* Registration form gating/submission now lives in js/registration-form.js
+   (assets/data/registration.js holds the shared config). See that file. */
 
 /* Registration Phase 1 modal — opened from the hero "Register your college"
-   button and the "Registration — Phase 1" button in the footer CTA. */
+   button and the "Registration — Phase 1" button in the footer CTA. Inside,
+   picking a category (.phase-option[data-phase-go]) swaps in the matching
+   .phase-step[data-phase-step] panel, which holds that category's form. */
 (function () {
   const modal = document.getElementById('phase1-modal');
   const openers = document.querySelectorAll('.js-open-phase1');
   if (!modal || !openers.length) return;
   const closeBtn = modal.querySelector('.phase-modal-close');
+  const steps = modal.querySelectorAll('[data-phase-step]');
 
-  function open() { modal.classList.add('open'); }
+  function showStep(name) {
+    steps.forEach(s => s.classList.toggle('active', s.dataset.phaseStep === name));
+  }
+
+  function open() { modal.classList.add('open'); showStep('picker'); }
   function close() { modal.classList.remove('open'); }
 
   openers.forEach(btn => btn.addEventListener('click', open));
@@ -356,6 +320,13 @@ if (menuBtn && mobileNav) {
   modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal.classList.contains('open')) close();
+  });
+
+  modal.querySelectorAll('[data-phase-go]').forEach((btn) => {
+    btn.addEventListener('click', () => showStep(btn.dataset.phaseGo));
+  });
+  modal.querySelectorAll('[data-phase-back]').forEach((btn) => {
+    btn.addEventListener('click', () => showStep('picker'));
   });
 })();
 

@@ -330,29 +330,145 @@
   <div class="lightbox-caption"></div>
 </div>
 
-<!-- Registration Phase 1 modal — links are filled in (and unlocked) automatically
-     from assets/data/registration.js once REGISTRATION_CONFIG.opensAt passes
-     and a Google Form URL has been pasted in for each key. -->
+<!-- Registration Phase 1 modal — pick a category, fill the form that appears.
+     Forms lock/unlock and submit via js/registration-form.js + assets/data/registration.js. -->
 <div class="phase-modal" id="phase1-modal" role="dialog" aria-modal="true" aria-labelledby="phase1-modal-title">
   <div class="phase-modal-panel">
     <button class="phase-modal-close" type="button" aria-label="Close">&times;</button>
     <div class="sec-tag">Registration — Phase 1</div>
-    <h3 id="phase1-modal-title">Which of these describes you?</h3>
-    <p>Pick a category and you'll be taken to the REEV 4.0 registration form for it.</p>
-    <p class="phase-modal-status" data-reg-status></p>
-    <div class="phase-modal-options">
-      <a class="phase-option reg-locked" data-reg-link="phase1PrevTeam" aria-disabled="true">
-        <span class="po-title">Previously Participated Team</span>
-        <span class="po-desc">Colleges that competed in a past REEV edition</span>
-      </a>
-      <a class="phase-option reg-locked" data-reg-link="phase1NewTeam" aria-disabled="true">
-        <span class="po-title">New / Upcoming Team</span>
-        <span class="po-desc">First-time college teams joining REEV 4.0</span>
-      </a>
-      <a class="phase-option reg-locked" data-reg-link="phase1Individual" aria-disabled="true">
-        <span class="po-title">Individual</span>
-        <span class="po-desc">Registering on your own, not yet attached to a team</span>
-      </a>
+
+    <div class="phase-step active" data-phase-step="picker">
+      <h3 id="phase1-modal-title">Which of these describes you?</h3>
+      <p>Pick a category and fill in the form that appears.</p>
+      <div class="phase-modal-options">
+        <button type="button" class="phase-option" data-phase-go="prevteam">
+          <span class="po-title">Previously Participated Team</span>
+          <span class="po-desc">Colleges that competed in a past REEV edition</span>
+        </button>
+        <button type="button" class="phase-option" data-phase-go="newteam">
+          <span class="po-title">New / Upcoming Team</span>
+          <span class="po-desc">First-time college teams joining REEV 4.0</span>
+        </button>
+        <button type="button" class="phase-option" data-phase-go="individual">
+          <span class="po-title">Individual</span>
+          <span class="po-desc">Registering on your own, not yet attached to a team</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="phase-step" data-phase-step="prevteam">
+      <button type="button" class="phase-back" data-phase-back>&larr; Back</button>
+      <h3>Previously Participated Team</h3>
+      <form class="reg-form" data-reg-form="phase1PrevTeam">
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="pt-college">College name <span class="req">*</span></label>
+            <input type="text" id="pt-college" name="collegeName" required>
+          </div>
+          <div class="field">
+            <label for="pt-team">Team name (past) <span class="req">*</span></label>
+            <input type="text" id="pt-team" name="teamName" required>
+          </div>
+          <div class="field">
+            <label for="pt-edition">Which edition did you compete in? <span class="req">*</span></label>
+            <input type="text" id="pt-edition" name="edition" placeholder="e.g. REEV 3.0" required>
+          </div>
+          <div class="field">
+            <label for="pt-contact">Contact name <span class="req">*</span></label>
+            <input type="text" id="pt-contact" name="contactName" required>
+          </div>
+          <div class="field">
+            <label for="pt-email">Email <span class="req">*</span></label>
+            <input type="email" id="pt-email" name="email" required>
+          </div>
+          <div class="field field-wide">
+            <label for="pt-phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="pt-phone" name="phone" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="phase-step" data-phase-step="newteam">
+      <button type="button" class="phase-back" data-phase-back>&larr; Back</button>
+      <h3>New / Upcoming Team</h3>
+      <form class="reg-form" data-reg-form="phase1NewTeam">
+        <div class="form-grid">
+          <div class="field field-wide">
+            <label for="nt-college">College name <span class="req">*</span></label>
+            <input type="text" id="nt-college" name="collegeName" required>
+          </div>
+          <div class="field">
+            <label for="nt-team">Intended team name <span class="req">*</span></label>
+            <input type="text" id="nt-team" name="teamName" required>
+          </div>
+          <div class="field">
+            <label for="nt-category">Category <span class="req">*</span></label>
+            <select id="nt-category" name="category" required>
+              <option value="" disabled selected>Choose one</option>
+              <option value="REEV">REEV</option>
+              <option value="e-Baja">e-Baja</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="nt-contact">Contact name <span class="req">*</span></label>
+            <input type="text" id="nt-contact" name="contactName" required>
+          </div>
+          <div class="field">
+            <label for="nt-email">Email <span class="req">*</span></label>
+            <input type="email" id="nt-email" name="email" required>
+          </div>
+          <div class="field field-wide">
+            <label for="nt-phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="nt-phone" name="phone" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="phase-step" data-phase-step="individual">
+      <button type="button" class="phase-back" data-phase-back>&larr; Back</button>
+      <h3>Individual</h3>
+      <form class="reg-form" data-reg-form="phase1Individual">
+        <div class="form-grid">
+          <div class="field">
+            <label for="ind-name">Full name <span class="req">*</span></label>
+            <input type="text" id="ind-name" name="fullName" required>
+          </div>
+          <div class="field">
+            <label for="ind-college">College <span class="req">*</span></label>
+            <input type="text" id="ind-college" name="college" required>
+          </div>
+          <div class="field">
+            <label for="ind-year">Year of study <span class="req">*</span></label>
+            <input type="text" id="ind-year" name="year" required>
+          </div>
+          <div class="field">
+            <label for="ind-email">Email <span class="req">*</span></label>
+            <input type="email" id="ind-email" name="email" required>
+          </div>
+          <div class="field field-wide">
+            <label for="ind-phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="ind-phone" name="phone" required>
+          </div>
+          <div class="field field-wide">
+            <label for="ind-reason">Why are you interested? <span class="req">*</span></label>
+            <textarea id="ind-reason" name="reason" required></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Submit ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
     </div>
   </div>
 </div>
@@ -364,5 +480,6 @@
 <script src="assets/data/quick-links.js"></script>
 <script src="assets/data/registration.js"></script>
 <script src="js/main.js"></script>
+<script src="js/registration-form.js"></script>
 </body>
 </html>
