@@ -24,7 +24,9 @@
          so the script knows which sheet tab to append to.
 */
 window.REGISTRATION_CONFIG = {
-  opensAt: "2026-08-25T00:00:00+05:30",
+  // TEMPORARILY unlocked early for testing — see TESTING note below.
+  // Real value to restore: "2026-08-25T00:00:00+05:30"
+  opensAt: "2026-08-23T00:00:00+05:30",
   opensAtLabel: "25 Aug 2026",
   endpoint: "https://script.google.com/macros/s/AKfycby9l4SXWkBPEVTOPsXZ3ZwIxeI6yViEEO8pjpqKeOG7aXdrr__95BzukcSw7uf5JkuqqQ/exec"
 };
