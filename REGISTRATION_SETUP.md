@@ -9,6 +9,12 @@ https://docs.google.com/spreadsheets/d/1-0hE2gt60LVAvYnv5sCrnGQUju06xUv6UPgfLWCH
 > Skip to [Step 1a](#step-1a--add-the-logs-tab-backup--audit-trail) and
 > [Step 3](#step-3--deploy-the-apps-script) — those are the only two things
 > that changed. Everything else below is unchanged from the original setup.
+>
+> **Also already have `Team` and `Phase1_NewTeam` tabs set up?** The "Category"
+> (REEV / e-Baja) question was removed from both forms. Delete the `Category`
+> column from those two tabs' header rows (and shift the columns after it
+> left, so they still line up with the field order in the table below), then
+> redeploy per Step 3 — the field order in the script has to match the sheet.
 
 Do these steps once. Nothing on the live site works until step 3 is done —
 forms stay locked with a "not connected yet" message until then.
@@ -41,13 +47,13 @@ order — Timestamp is filled in automatically, don't type it):
 
 | Tab | Header row (row 1) |
 |---|---|
-| `Team` | Timestamp, College / Institution Name, Team Name, Category, Team Size, Captain Name, Captain Email, Captain Phone, Notes |
+| `Team` | Timestamp, College / Institution Name, Team Name, Team Size, Captain Name, Captain Email, Captain Phone, Notes |
 | `Judge` | Timestamp, Full Name, Organisation, Area of Expertise, Email, Phone, Notes |
 | `Student` | Timestamp, Full Name, College, Year of Study, Area of Interest, Email, Phone |
 | `Mentor` | Timestamp, Full Name, Organisation/Institution, Area of Expertise, Email, Phone, Notes |
 | `SME` | Timestamp, Full Name, Organisation, Area of Expertise, Email, Phone |
 | `Phase1_PrevTeam` | Timestamp, College Name, Team Name (Past), Edition Competed In, Contact Name, Email, Phone |
-| `Phase1_NewTeam` | Timestamp, College Name, Intended Team Name, Category, Contact Name, Email, Phone |
+| `Phase1_NewTeam` | Timestamp, College Name, Intended Team Name, Contact Name, Email, Phone |
 | `Phase1_Individual` | Timestamp, Full Name, College, Year of Study, Reason for Interest, Email, Phone |
 | `Logs` | Timestamp, Form Type, Status, Error, Raw Data (JSON) |
 
@@ -73,8 +79,8 @@ order — Timestamp is filled in automatically, don't type it):
 var FORM_CONFIG = {
   team: {
     sheet: 'Team',
-    fields: ['collegeName', 'teamName', 'category', 'teamSize', 'captainName', 'captainEmail', 'captainPhone', 'notes'],
-    required: ['collegeName', 'teamName', 'category', 'teamSize', 'captainName', 'captainEmail', 'captainPhone']
+    fields: ['collegeName', 'teamName', 'teamSize', 'captainName', 'captainEmail', 'captainPhone', 'notes'],
+    required: ['collegeName', 'teamName', 'teamSize', 'captainName', 'captainEmail', 'captainPhone']
   },
   judge: {
     sheet: 'Judge',
@@ -103,8 +109,8 @@ var FORM_CONFIG = {
   },
   phase1NewTeam: {
     sheet: 'Phase1_NewTeam',
-    fields: ['collegeName', 'teamName', 'category', 'contactName', 'email', 'phone'],
-    required: ['collegeName', 'teamName', 'category', 'contactName', 'email', 'phone']
+    fields: ['collegeName', 'teamName', 'contactName', 'email', 'phone'],
+    required: ['collegeName', 'teamName', 'contactName', 'email', 'phone']
   },
   phase1Individual: {
     sheet: 'Phase1_Individual',
