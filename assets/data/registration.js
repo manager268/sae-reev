@@ -43,9 +43,7 @@
          Razorpay's Checkout widget needs to open.
 */
 window.REGISTRATION_CONFIG = {
-  // TEMPORARILY unlocked early for testing — see TESTING note below.
-  // Real value to restore: "2026-08-25T00:00:00+05:30"
-  opensAt: "2026-08-23T00:00:00+05:30",
+  opensAt: "2026-08-25T00:00:00+05:30",
   opensAtLabel: "25 Aug 2026",
   supabaseUrl: "https://ykgisvvjsxvuqqwjcjjh.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrZ2lzdnZqc3h2dXFxd2pjampoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0OTY5NjksImV4cCI6MjEwMzA3Mjk2OX0.l8EMwrUxvUnzv43MaHoTp3Qmhs4G4g0lsaE0YSVqiNo",
