@@ -682,6 +682,8 @@
   }
   .logo-row .logo-tile:hover{transform:scale(1.08);}
   .logo-row .logo-tile img{max-height:100%;max-width:140px;width:auto;object-fit:contain;}
+  .logo-row .logo-tile--matlab{gap:6px;}
+  .logo-row .logo-tile--matlab span{font-family:var(--telemetry);font-weight:700;font-size:16px;color:#0076A8;letter-spacing:.01em;}
 
   /* ============ BAJA-STYLE OPENING HERO ============ */
   /* Full-bleed slide carousel, big overlaid title, dot indicators — nav sits above, all the
