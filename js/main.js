@@ -297,10 +297,13 @@ if (menuBtn && mobileNav) {
 /* Registration form gating/submission now lives in js/registration-form.js
    (assets/data/registration.js holds the shared config). See that file. */
 
-/* Registration Phase 1 modal — opened from the hero "Register your college"
-   button and the "Registration — Phase 1" button in the footer CTA. Inside,
-   picking a category (.phase-option[data-phase-go]) swaps in the matching
-   .phase-step[data-phase-step] panel, which holds that category's form. */
+/* Registration Phase 1 modal — no longer wired to any on-page button (the
+   hero "Register your college" and footer "Registration — Phase 1" buttons
+   both link straight to register.html now). Left in place in case a
+   .js-open-phase1 opener is reintroduced; the guard below no-ops otherwise.
+   Inside, picking a category (.phase-option[data-phase-go]) swaps in the
+   matching .phase-step[data-phase-step] panel, which holds that category's
+   form. */
 (function () {
   const modal = document.getElementById('phase1-modal');
   const openers = document.querySelectorAll('.js-open-phase1');
