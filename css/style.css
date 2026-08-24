@@ -685,9 +685,9 @@
      its native aspect ratio (square icon marks vs. wide wordmarks). max-width
      is just a safety cap for the handful of very wide wordmarks. */
   .logo-row .logo-tile img{height:34px;width:auto;max-width:190px;object-fit:contain;}
-  .logo-row .logo-tile--matlab{gap:6px;}
-  .logo-row .logo-tile--matlab img{height:26px;}
-  .logo-row .logo-tile--matlab span{font-family:var(--telemetry);font-weight:700;font-size:16px;color:#0076A8;letter-spacing:.01em;}
+  .logo-row .logo-tile--matlab{gap:7px;}
+  .logo-row .logo-tile--matlab img{height:32px;}
+  .logo-row .logo-tile--matlab span{font-family:var(--telemetry);font-weight:700;font-size:21px;color:#0076A8;letter-spacing:.01em;}
 
   /* ============ BAJA-STYLE OPENING HERO ============ */
   /* Full-bleed slide carousel, big overlaid title, dot indicators — nav sits above, all the
