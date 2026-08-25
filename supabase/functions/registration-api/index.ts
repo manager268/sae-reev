@@ -241,6 +241,39 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
   // gets created for a genuinely paid registration.
   const members = parseParticipants(data.participants);
 
+  // Payment row goes in FIRST, deliberately, and on its own (team_registration_id
+  // null for now) — this is what payments_razorpay_payment_id_key (see
+  // supabase/payment_idempotency.sql) actually protects. If this exact
+  // payment was already used for a registration (retry after a network
+  // blip, accidental double-submit, etc.), this insert fails fast on that
+  // unique constraint and nothing else below runs — no duplicate
+  // registration gets created for one real charge.
+  const { data: paymentRow, error: paymentErr } = await supabase
+    .from("payments")
+    .insert({
+      razorpay_order_id: data.razorpay_order_id,
+      razorpay_payment_id: data.razorpay_payment_id,
+      razorpay_signature: data.razorpay_signature,
+      amount_paise: TEAM_FEE_PAISE,
+      status: "verified",
+      verified_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (paymentErr) {
+    if (paymentErr.code === "23505") {
+      // unique_violation on razorpay_payment_id — this payment already
+      // completed a registration once.
+      return {
+        ok: false,
+        error: "This payment has already been used to complete a registration. If you believe this is a mistake, contact us with payment ID " +
+          (data.razorpay_payment_id || "(none)") + ".",
+      };
+    }
+    return { ok: false, error: paymentErr.message };
+  }
+
   const { data: row, error } = await supabase
     .from("team_registrations")
     .insert({
@@ -260,6 +293,10 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
     .select()
     .single();
 
+  // Payment is already safely recorded above even if anything from here
+  // down fails — it just won't be linked to a registration yet. That's a
+  // real payment needing a manual look via the payments audit trail
+  // (never a lost/unrecorded charge), not a silent failure.
   if (error) return { ok: false, error: error.message };
 
   if (members.length) {
@@ -276,16 +313,11 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
     if (memberErr) return { ok: false, error: memberErr.message };
   }
 
-  const { error: paymentErr } = await supabase.from("payments").insert({
-    team_registration_id: row.id,
-    razorpay_order_id: data.razorpay_order_id,
-    razorpay_payment_id: data.razorpay_payment_id,
-    razorpay_signature: data.razorpay_signature,
-    amount_paise: TEAM_FEE_PAISE,
-    status: "verified",
-    verified_at: new Date().toISOString(),
-  });
-  if (paymentErr) return { ok: false, error: paymentErr.message };
+  const { error: linkErr } = await supabase
+    .from("payments")
+    .update({ team_registration_id: row.id })
+    .eq("id", paymentRow.id);
+  if (linkErr) return { ok: false, error: linkErr.message };
 
   return { ok: true };
 }

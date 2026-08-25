@@ -141,6 +141,25 @@ Session note: sign-in doesn't persist past closing the browser (uses
 a shared computer. Reloading the page while the browser stays open keeps
 you signed in; closing and reopening the browser requires signing in again.
 
+## Step 6 — Payment idempotency (do this once, any time after Step 1)
+
+Guards against one real Razorpay payment ever backing two registration
+rows — e.g. a network blip right after a successful charge, followed by
+the visitor clicking Submit again.
+
+1. **SQL Editor → New query**, paste the entire contents of
+   [supabase/payment_idempotency.sql](supabase/payment_idempotency.sql),
+   **Run**. Adds a unique index on `payments.razorpay_payment_id`.
+2. Redeploy the function so it picks up the matching code change (payment
+   row written before the registration row, so a duplicate fails fast
+   instead of creating an orphaned second registration):
+   ```
+   supabase functions deploy registration-api
+   ```
+
+That's the whole step — nothing in `assets/data/registration.js` or any
+HTML page needs to change for this one.
+
 ## Local development note
 
 `supabase/functions/registration-api/index.ts` is a Deno Edge Function —

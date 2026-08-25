@@ -40,6 +40,22 @@
          "I paid" claim without a real payment can't get through.
     Requires checkout.razorpay.com's checkout.js to already be loaded on
     the page (see the <script> tag in register.html / index.html).
+
+  DOUBLE-CHARGE / DOUBLE-SUBMIT GUARDS:
+    - Once a paid form's backend write actually succeeds, its submit
+      button is left disabled permanently (never re-enabled on success) —
+      that form instance can't be resubmitted at all.
+    - If the payment succeeds but the backend write fails afterwards (a
+      network blip, say), the verified payment id/order id/signature are
+      stashed on the <form> element itself (form._verifiedPayment).
+      Clicking Submit again resends that same verified payment instead of
+      opening a brand new Razorpay order — so a retry can't charge twice.
+    - The hard guarantee against a duplicate *registration* from one real
+      payment is a unique constraint in the database itself (see
+      supabase/payment_idempotency.sql + registration-api/index.ts writing
+      the payments row before the registration row) — the form-level
+      stash above is just what keeps a normal retry from even reaching
+      that point.
 */
 (function () {
   const cfg = window.REGISTRATION_CONFIG;
@@ -84,6 +100,13 @@
 
   // Sends the (possibly payment-verified) submission to the backend and
   // renders the resulting status. Shared by the paid and unpaid paths.
+  //
+  // submitBtn is deliberately NOT re-enabled on a genuine success — a
+  // completed registration should never be resubmittable from that same
+  // form instance. It IS re-enabled on error/network-failure so the
+  // visitor can retry; for a paid form that already has a verified
+  // payment (see handlePaidSubmit's form._verifiedPayment), the submit
+  // handler below re-sends that same payment rather than charging again.
   function submitToBackend(form, data, submitBtn) {
     setStatus(form, 'Submitting…', 'pending');
     return callBackend(data)
@@ -91,14 +114,14 @@
         if (res && res.ok) {
           setStatus(form, 'Thanks — you’re registered. We’ll be in touch.', 'success');
           form.reset();
+          delete form._verifiedPayment;
         } else {
           setStatus(form, (res && res.error) || 'Something went wrong — please try again.', 'error');
+          if (submitBtn) submitBtn.disabled = false;
         }
       })
       .catch(() => {
         setStatus(form, 'Network error — please try again in a moment.', 'error');
-      })
-      .finally(() => {
         if (submitBtn) submitBtn.disabled = false;
       });
   }
@@ -144,6 +167,16 @@
             data.razorpay_payment_id = response.razorpay_payment_id;
             data.razorpay_order_id = response.razorpay_order_id;
             data.razorpay_signature = response.razorpay_signature;
+            // Remember this verified payment on the form itself: if the
+            // submission below fails (network blip, backend hiccup, etc.)
+            // and the visitor clicks Submit again, the handler further down
+            // reuses this same already-paid payment instead of opening a
+            // brand new Razorpay order and charging a second time.
+            form._verifiedPayment = {
+              razorpay_payment_id: data.razorpay_payment_id,
+              razorpay_order_id: data.razorpay_order_id,
+              razorpay_signature: data.razorpay_signature
+            };
             setStatus(form, 'Verifying payment…', 'pending');
             submitToBackend(form, data, submitBtn);
           },
@@ -191,7 +224,14 @@
 
       if (submitBtn) submitBtn.disabled = true;
 
-      if (isPaid) {
+      if (isPaid && form._verifiedPayment) {
+        // A previous attempt already completed a real Razorpay payment but
+        // the backend write failed afterwards — resend that same verified
+        // payment (picking up any field edits made since) rather than
+        // opening a new order and charging again.
+        Object.assign(data, form._verifiedPayment);
+        submitToBackend(form, data, submitBtn);
+      } else if (isPaid) {
         handlePaidSubmit(form, data, submitBtn);
       } else {
         submitToBackend(form, data, submitBtn);
