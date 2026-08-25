@@ -48,6 +48,6 @@ window.REGISTRATION_CONFIG = {
   supabaseUrl: "https://ykgisvvjsxvuqqwjcjjh.supabase.co",
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrZ2lzdnZqc3h2dXFxd2pjampoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0OTY5NjksImV4cCI6MjEwMzA3Mjk2OX0.l8EMwrUxvUnzv43MaHoTp3Qmhs4G4g0lsaE0YSVqiNo",
   razorpay: {
-    keyId: "rzp_live_TTrkdbc9IrkFvi"
+    keyId: "rzp_live_TTuCpA9AVV7yUJ"
   }
 };
