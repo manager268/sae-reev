@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
     data = await req.json();
 
     if (data.action === "createOrder") {
-      return await handleCreateOrder();
+      return await handleCreateOrder(data);
     }
 
     formType = data.formType || "(missing)";
@@ -84,10 +84,19 @@ Deno.serve(async (req) => {
 
 // ---- Razorpay order creation ----------------------------------------------
 
-async function handleCreateOrder() {
+async function handleCreateOrder(data: Record<string, any>) {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
     return jsonResponse({ ok: false, error: "Payment isn’t connected yet — check back soon." });
   }
+
+  // Validate the registration itself — including the one-email-per-team-
+  // registration check — BEFORE ever creating a Razorpay order. Nobody
+  // should pay ₹20,000 only to be told afterward their email was already
+  // used or a required field was missing.
+  const formType = data.formType || "";
+  const validation = await validateTeamRegistration(formType, data);
+  if (!validation.ok) return jsonResponse(validation);
+
   const res = await fetch("https://api.razorpay.com/v1/orders", {
     method: "POST",
     headers: {
@@ -146,6 +155,52 @@ function parseParticipants(json?: string): Array<{ name: string; branch?: string
   }
 }
 
+// One email per registration TYPE, not globally — the same address can be
+// a team contact and also a judge/mentor/etc, just not submit the same
+// form twice. True Postgres unique indexes (see supabase/email_uniqueness.sql)
+// are the hard guarantee; this is a friendly pre-check so a paying team
+// isn't charged only to be told afterward, and duplicateEmailError() below
+// is the matching last-resort catch on the actual insert (covers the race
+// between two people submitting the same email at the same instant).
+function isUniqueViolation(error: any): boolean {
+  return !!error && error.code === "23505";
+}
+
+function duplicateEmailError(label: string): SubmitResult {
+  return {
+    ok: false,
+    error: `This email has already been used to register as a ${label} for REEV 4.0. If you believe this is a mistake, contact us.`,
+  };
+}
+
+async function emailAlreadyUsed(table: string, column: string, email: string): Promise<boolean | SubmitResult> {
+  const { data: existing, error } = await supabase.from(table).select("id").eq(column, email).limit(1);
+  if (error) return { ok: false, error: error.message };
+  return !!(existing && existing.length);
+}
+
+// Shared by both the pre-payment check (handleCreateOrder) and the actual
+// write (submitTeamRegistration), so the two can never drift out of sync.
+async function validateTeamRegistration(formType: string, data: Record<string, any>): Promise<SubmitResult> {
+  const contactName = data.captainName || data.contactName;
+  const contactEmail = data.captainEmail || data.email;
+  const contactPhone = data.captainPhone || data.phone;
+
+  const requiredBase = ["collegeName", "teamName"];
+  if (formType === "phase1PrevTeam") requiredBase.push("edition");
+  const err = missingField(data, requiredBase) ||
+    (!contactName ? "Missing required field: contact name" : null) ||
+    (!contactEmail ? "Missing required field: email" : null) ||
+    (!contactPhone ? "Missing required field: phone" : null);
+  if (err) return { ok: false, error: err };
+
+  const used = await emailAlreadyUsed("team_registrations", "contact_email", contactEmail);
+  if (typeof used === "object") return used; // lookup itself errored
+  if (used) return duplicateEmailError("team");
+
+  return { ok: true };
+}
+
 async function submitForm(formType: string, data: Record<string, any>): Promise<SubmitResult> {
   switch (formType) {
     case "team":
@@ -155,6 +210,9 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
     case "judge": {
       const err = missingField(data, ["fullName", "organisation", "expertise", "email", "phone"]);
       if (err) return { ok: false, error: err };
+      const used = await emailAlreadyUsed("judges", "email", data.email);
+      if (typeof used === "object") return used;
+      if (used) return duplicateEmailError("judge");
       const { error } = await supabase.from("judges").insert({
         full_name: data.fullName,
         organisation: data.organisation,
@@ -163,11 +221,15 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
         phone: data.phone,
         notes: data.notes || null,
       });
-      return error ? { ok: false, error: error.message } : { ok: true };
+      if (error) return isUniqueViolation(error) ? duplicateEmailError("judge") : { ok: false, error: error.message };
+      return { ok: true };
     }
     case "techteamStudent": {
       const err = missingField(data, ["fullName", "college", "year", "interest", "email", "phone"]);
       if (err) return { ok: false, error: err };
+      const used = await emailAlreadyUsed("student_volunteers", "email", data.email);
+      if (typeof used === "object") return used;
+      if (used) return duplicateEmailError("student volunteer");
       const { error } = await supabase.from("student_volunteers").insert({
         full_name: data.fullName,
         college: data.college,
@@ -176,11 +238,15 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
         email: data.email,
         phone: data.phone,
       });
-      return error ? { ok: false, error: error.message } : { ok: true };
+      if (error) return isUniqueViolation(error) ? duplicateEmailError("student volunteer") : { ok: false, error: error.message };
+      return { ok: true };
     }
     case "techteamMentor": {
       const err = missingField(data, ["fullName", "organisation", "expertise", "email", "phone"]);
       if (err) return { ok: false, error: err };
+      const used = await emailAlreadyUsed("mentors", "email", data.email);
+      if (typeof used === "object") return used;
+      if (used) return duplicateEmailError("mentor");
       const { error } = await supabase.from("mentors").insert({
         full_name: data.fullName,
         organisation: data.organisation,
@@ -189,11 +255,15 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
         phone: data.phone,
         notes: data.notes || null,
       });
-      return error ? { ok: false, error: error.message } : { ok: true };
+      if (error) return isUniqueViolation(error) ? duplicateEmailError("mentor") : { ok: false, error: error.message };
+      return { ok: true };
     }
     case "techteamSme": {
       const err = missingField(data, ["fullName", "organisation", "expertise", "email", "phone"]);
       if (err) return { ok: false, error: err };
+      const used = await emailAlreadyUsed("smes", "email", data.email);
+      if (typeof used === "object") return used;
+      if (used) return duplicateEmailError("SME");
       const { error } = await supabase.from("smes").insert({
         full_name: data.fullName,
         organisation: data.organisation,
@@ -201,11 +271,15 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
         email: data.email,
         phone: data.phone,
       });
-      return error ? { ok: false, error: error.message } : { ok: true };
+      if (error) return isUniqueViolation(error) ? duplicateEmailError("SME") : { ok: false, error: error.message };
+      return { ok: true };
     }
     case "phase1Individual": {
       const err = missingField(data, ["fullName", "college", "year", "reason", "email", "phone"]);
       if (err) return { ok: false, error: err };
+      const used = await emailAlreadyUsed("individuals", "email", data.email);
+      if (typeof used === "object") return used;
+      if (used) return duplicateEmailError("individual");
       const { error } = await supabase.from("individuals").insert({
         full_name: data.fullName,
         college: data.college,
@@ -214,7 +288,8 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
         email: data.email,
         phone: data.phone,
       });
-      return error ? { ok: false, error: error.message } : { ok: true };
+      if (error) return isUniqueViolation(error) ? duplicateEmailError("individual") : { ok: false, error: error.message };
+      return { ok: true };
     }
     default:
       return { ok: false, error: "Unknown form type" };
@@ -228,13 +303,12 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
   const contactEmail = data.captainEmail || data.email;
   const contactPhone = data.captainPhone || data.phone;
 
-  const requiredBase = ["collegeName", "teamName"];
-  if (formType === "phase1PrevTeam") requiredBase.push("edition");
-  const err = missingField(data, requiredBase) ||
-    (!contactName ? "Missing required field: contact name" : null) ||
-    (!contactEmail ? "Missing required field: email" : null) ||
-    (!contactPhone ? "Missing required field: phone" : null);
-  if (err) return { ok: false, error: err };
+  // Re-validates (including the email-already-used check) even though
+  // handleCreateOrder already did this before payment — cheap, and closes
+  // the race where two people submit the same email at nearly the same
+  // instant. The unique index catch just below is the final backstop.
+  const validation = await validateTeamRegistration(formType, data);
+  if (!validation.ok) return validation;
 
   // Reaching here means: for team/phase1PrevTeam/phase1NewTeam, doPost's
   // caller has already verified the Razorpay signature — this row only
@@ -297,7 +371,9 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
   // down fails — it just won't be linked to a registration yet. That's a
   // real payment needing a manual look via the payments audit trail
   // (never a lost/unrecorded charge), not a silent failure.
-  if (error) return { ok: false, error: error.message };
+  if (error) {
+    return isUniqueViolation(error) ? duplicateEmailError("team") : { ok: false, error: error.message };
+  }
 
   if (members.length) {
     const { error: memberErr } = await supabase.from("team_members").insert(

@@ -160,6 +160,27 @@ the visitor clicking Submit again.
 That's the whole step — nothing in `assets/data/registration.js` or any
 HTML page needs to change for this one.
 
+## Step 7 — One email per registration type
+
+Stops the same email from submitting the same form twice (bot spam,
+accidental double-registration). Scope is per registration *type*, not
+global — one email can be a team contact AND a judge AND a mentor, just
+can't submit the Team form (or the Judge form, etc.) more than once.
+
+1. **SQL Editor → New query**, paste the entire contents of
+   [supabase/email_uniqueness.sql](supabase/email_uniqueness.sql), **Run**.
+   Adds a unique index on the email column of `team_registrations`,
+   `judges`, `student_volunteers`, `mentors`, `smes`, and `individuals`.
+2. Redeploy so the function picks up the matching code (a friendly
+   pre-payment check on the Team form — so nobody pays before finding out
+   their email was already used — plus a duplicate-email message on every
+   form if the database constraint above ever catches a race):
+   ```
+   supabase functions deploy registration-api
+   ```
+
+Same as Step 6 — nothing on the frontend needs to change.
+
 ## Local development note
 
 `supabase/functions/registration-api/index.ts` is a Deno Edge Function —

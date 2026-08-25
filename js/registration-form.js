@@ -140,7 +140,11 @@
 
     setStatus(form, 'Preparing payment…', 'pending');
 
-    callBackend({ action: 'createOrder', formType: data.formType })
+    // Sends the full form data, not just formType, so the backend can
+    // validate the registration itself — including the one-email-per-team
+    // check — before ever creating a Razorpay order. Nobody should pay
+    // ₹20,000 only to be told afterward the email was already used.
+    callBackend(Object.assign({ action: 'createOrder' }, data))
       .then((order) => {
         if (!order || !order.ok) {
           setStatus(form, (order && order.error) || 'Could not start payment — please try again.', 'error');
