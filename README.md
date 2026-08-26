@@ -1,4 +1,4 @@
-# SAEINDIA REEV 4.0
+# REEV SAEINDIA 4.0
 
 Website for the SAEINDIA Bengaluru Section's REEV (Range Extended Electric Vehicle) competition.
 

@@ -159,7 +159,7 @@
           order_id: order.orderId,
           amount: order.amount,
           currency: order.currency,
-          name: 'SAEINDIA REEV 4.0',
+          name: 'REEV SAEINDIA 4.0',
           description: 'Team registration fee',
           prefill: {
             name: data.captainName || data.contactName || '',
