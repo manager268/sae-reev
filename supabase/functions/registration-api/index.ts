@@ -1,8 +1,9 @@
 // REEV 4.0 registration intake — Supabase Edge Function.
 // Deployed as "registration-api". Receives every submission from the
-// site's registration forms, and for the three paid form types, also
-// handles Razorpay order creation + payment verification first. Mirrors
-// the old Code.gs (Apps Script) backend one-for-one — see SUPABASE_SETUP.md.
+// site's registration forms, and for the paid form types (see
+// PAID_FORM_TYPES below), also handles Razorpay order creation + payment
+// verification first. Mirrors the old Code.gs (Apps Script) backend
+// one-for-one — see SUPABASE_SETUP.md.
 //
 // Secrets this function reads from its environment (set via
 // `supabase secrets set`, never committed to git — see SUPABASE_SETUP.md):
@@ -17,12 +18,17 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RAZORPAY_KEY_ID = Deno.env.get("RAZORPAY_KEY_ID") ?? "";
 const RAZORPAY_KEY_SECRET = Deno.env.get("RAZORPAY_KEY_SECRET") ?? "";
 
-// The amount actually charged. The "₹20,000" text on the site is just a
-// label — this constant is the only thing that decides what gets billed,
-// exactly like TEAM_FEE_PAISE did in the old Code.gs.
+// The amounts actually charged. The "₹20,000"/"₹2,000" text on the site is
+// just a label — these constants are the only thing that decides what gets
+// billed, exactly like TEAM_FEE_PAISE did in the old Code.gs.
 const TEAM_FEE_PAISE = 2000000; // ₹20,000
+const INDIVIDUAL_FEE_PAISE = 200000; // ₹2,000
 
-const PAID_FORM_TYPES = new Set(["team", "phase1PrevTeam", "phase1NewTeam"]);
+const PAID_FORM_TYPES = new Set(["team", "phase1PrevTeam", "phase1NewTeam", "individual"]);
+
+function feeForFormType(formType: string): number {
+  return formType === "individual" ? INDIVIDUAL_FEE_PAISE : TEAM_FEE_PAISE;
+}
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -89,12 +95,14 @@ async function handleCreateOrder(data: Record<string, any>) {
     return jsonResponse({ ok: false, error: "Payment isn’t connected yet — check back soon." });
   }
 
-  // Validate the registration itself — including the one-email-per-team-
-  // registration check — BEFORE ever creating a Razorpay order. Nobody
-  // should pay ₹20,000 only to be told afterward their email was already
-  // used or a required field was missing.
+  // Validate the registration itself — including the one-email-per-type
+  // check — BEFORE ever creating a Razorpay order. Nobody should pay only
+  // to be told afterward their email was already used or a required field
+  // was missing.
   const formType = data.formType || "";
-  const validation = await validateTeamRegistration(formType, data);
+  const validation = formType === "individual"
+    ? await validateIndividualRegistration(data)
+    : await validateTeamRegistration(formType, data);
   if (!validation.ok) return jsonResponse(validation);
 
   const res = await fetch("https://api.razorpay.com/v1/orders", {
@@ -104,7 +112,7 @@ async function handleCreateOrder(data: Record<string, any>) {
       Authorization: "Basic " + btoa(`${RAZORPAY_KEY_ID}:${RAZORPAY_KEY_SECRET}`),
     },
     body: JSON.stringify({
-      amount: TEAM_FEE_PAISE,
+      amount: feeForFormType(formType),
       currency: "INR",
       receipt: "reev4-" + Date.now(),
       payment_capture: 1,
@@ -201,6 +209,21 @@ async function validateTeamRegistration(formType: string, data: Record<string, a
   return { ok: true };
 }
 
+// Shared by both the pre-payment check (handleCreateOrder) and the actual
+// write (submitIndividualRegistration) — same reasoning as
+// validateTeamRegistration above. Distinct from the older, free
+// phase1Individual path, which is untouched by this.
+async function validateIndividualRegistration(data: Record<string, any>): Promise<SubmitResult> {
+  const err = missingField(data, ["fullName", "college", "year", "reason", "email", "phone"]);
+  if (err) return { ok: false, error: err };
+
+  const used = await emailAlreadyUsed("individuals", "email", data.email);
+  if (typeof used === "object") return used;
+  if (used) return duplicateEmailError("individual");
+
+  return { ok: true };
+}
+
 async function submitForm(formType: string, data: Record<string, any>): Promise<SubmitResult> {
   switch (formType) {
     case "team":
@@ -274,6 +297,8 @@ async function submitForm(formType: string, data: Record<string, any>): Promise<
       if (error) return isUniqueViolation(error) ? duplicateEmailError("SME") : { ok: false, error: error.message };
       return { ok: true };
     }
+    case "individual":
+      return submitIndividualRegistration(data);
     case "phase1Individual": {
       const err = missingField(data, ["fullName", "college", "year", "reason", "email", "phone"]);
       if (err) return { ok: false, error: err };
@@ -392,6 +417,70 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
   const { error: linkErr } = await supabase
     .from("payments")
     .update({ team_registration_id: row.id })
+    .eq("id", paymentRow.id);
+  if (linkErr) return { ok: false, error: linkErr.message };
+
+  return { ok: true };
+}
+
+// The paid "Register — Individual" path (register.html, ₹2,000) — same
+// shape as submitTeamRegistration: payment row first (so a retried/duplicate
+// payment fails fast on payments_razorpay_payment_id_key instead of ever
+// reaching the individuals insert), then the individuals row, then link the
+// two. Distinct from the older, free phase1Individual path above.
+async function submitIndividualRegistration(data: Record<string, any>): Promise<SubmitResult> {
+  const validation = await validateIndividualRegistration(data);
+  if (!validation.ok) return validation;
+
+  const { data: paymentRow, error: paymentErr } = await supabase
+    .from("payments")
+    .insert({
+      razorpay_order_id: data.razorpay_order_id,
+      razorpay_payment_id: data.razorpay_payment_id,
+      razorpay_signature: data.razorpay_signature,
+      amount_paise: INDIVIDUAL_FEE_PAISE,
+      status: "verified",
+      verified_at: new Date().toISOString(),
+    })
+    .select()
+    .single();
+
+  if (paymentErr) {
+    if (paymentErr.code === "23505") {
+      return {
+        ok: false,
+        error: "This payment has already been used to complete a registration. If you believe this is a mistake, contact us with payment ID " +
+          (data.razorpay_payment_id || "(none)") + ".",
+      };
+    }
+    return { ok: false, error: paymentErr.message };
+  }
+
+  const { data: row, error } = await supabase
+    .from("individuals")
+    .insert({
+      full_name: data.fullName,
+      college: data.college,
+      year: data.year,
+      reason: data.reason,
+      email: data.email,
+      phone: data.phone,
+      payment_status: "paid",
+      payment_id: data.razorpay_payment_id,
+      amount_paid_inr: INDIVIDUAL_FEE_PAISE / 100,
+    })
+    .select()
+    .single();
+
+  // Same note as submitTeamRegistration: the payment above is already
+  // safely recorded even if this fails — just not linked yet.
+  if (error) {
+    return isUniqueViolation(error) ? duplicateEmailError("individual") : { ok: false, error: error.message };
+  }
+
+  const { error: linkErr } = await supabase
+    .from("payments")
+    .update({ individual_id: row.id })
     .eq("id", paymentRow.id);
   if (linkErr) return { ok: false, error: linkErr.message };
 

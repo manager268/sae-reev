@@ -21,17 +21,18 @@
          isn't connected yet" note, even after opensAt.
        - The Edge Function URL is derived from supabaseUrl automatically:
          `${supabaseUrl}/functions/v1/registration-api`.
-       - One function serves all 8 forms — each form sends its own
+       - One function serves all 9 forms — each form sends its own
          formType (team, judge, techteamStudent, techteamMentor,
-         techteamSme, phase1PrevTeam, phase1NewTeam, phase1Individual)
-         so the function knows which table(s) to write to.
+         techteamSme, phase1PrevTeam, phase1NewTeam, phase1Individual,
+         individual) so the function knows which table(s) to write to.
 
   3. razorpay.keyId
-     The three team-registration forms (team, phase1PrevTeam,
-     phase1NewTeam) collect a ₹20,000 fee via Razorpay before they submit
-     — see js/registration-form.js. This is Razorpay's public "Key ID"
-     (safe to publish — it identifies your account, it can't move money on
-     its own). Leave it "" and those three forms stay locked with a
+     Four form types collect a fee via Razorpay before they submit — the
+     three team-registration paths (team, phase1PrevTeam, phase1NewTeam:
+     ₹20,000) plus the standalone Individual registration (individual:
+     ₹2,000) — see js/registration-form.js. This is Razorpay's public
+     "Key ID" (safe to publish — it identifies your account, it can't move
+     money on its own). Leave it "" and those forms stay locked with a
      "payment isn't connected yet" note, same idea as above.
        - The Key SECRET is a completely different thing and must NEVER go
          in this file (or anywhere in this repo) — it lives only as a

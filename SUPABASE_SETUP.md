@@ -181,6 +181,31 @@ can't submit the Team form (or the Judge form, etc.) more than once.
 
 Same as Step 6 — nothing on the frontend needs to change.
 
+## Step 8 — Individual registration (₹2,000, paid)
+
+Adds a fourth, standalone paid path — the "Register — Individual" tab on
+register.html — for anyone attending without a team, alongside Team, Judge,
+and Tech Team/Volunteer. Same Razorpay flow as Team (order created and
+verified server-side), just a smaller fee and its own `individuals` table
+instead of `team_registrations`.
+
+1. **SQL Editor → New query**, paste the entire contents of
+   [supabase/individual_registration_payment.sql](supabase/individual_registration_payment.sql),
+   **Run**. Adds `payment_status`/`payment_id`/`amount_paid_inr` to
+   `individuals`, and an optional `individual_id` link on `payments`
+   (mirrors `team_registration_id`).
+2. Redeploy so the function picks up the matching code (`individual` added
+   to `PAID_FORM_TYPES`, its own ₹2,000 fee constant, and its own
+   validation/insert path — separate from the older, unrelated free
+   `phase1Individual` path in index.html's Phase 1 modal):
+   ```
+   supabase functions deploy registration-api
+   ```
+
+Nothing else needed — email-uniqueness (Step 7) and payment-idempotency
+(Step 6) already cover every table and the whole `payments` table
+respectively, `individuals` included.
+
 ## Local development note
 
 `supabase/functions/registration-api/index.ts` is a Deno Edge Function —

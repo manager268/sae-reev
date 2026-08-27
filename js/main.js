@@ -281,11 +281,11 @@ if (menuBtn && mobileNav) {
   });
 })();
 
-/* Register-page tabs (Team / Judge / Tech Team) */
+/* Register-page tabs (Team / Judge / Tech Team / Individual) */
 (function () {
   const tabs = document.querySelectorAll('.reg-tab-btn');
   if (!tabs.length) return;
-  const hashToTab = { team: 'tab-team', judge: 'tab-judge', techteam: 'tab-techteam' };
+  const hashToTab = { team: 'tab-team', judge: 'tab-judge', techteam: 'tab-techteam', individual: 'tab-individual' };
 
   function activate(btn) {
     tabs.forEach(b => b.classList.remove('active'));

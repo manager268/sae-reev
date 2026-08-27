@@ -25,9 +25,11 @@
     - A `<p class="form-status" data-form-status></p>` right after the
       submit button gets the locked / submitting / success / error text.
 
-  PAYMENT (Team, Phase1 Previously-Participated-Team, Phase1 New-Team):
-    These three form types (PAID_FORM_TYPES below) collect a registration
-    fee via Razorpay before their data is ever written to the database:
+  PAYMENT (Team, Phase1 Previously-Participated-Team, Phase1 New-Team, Individual):
+    These form types (PAID_FORM_TYPES below) collect a registration fee via
+    Razorpay before their data is ever written to the database — ₹20,000
+    for the three team paths, ₹2,000 for Individual (the exact amount is
+    always decided server-side, see point 1 below):
       1. Submit click -> ask the backend to create a Razorpay order (the
          fee amount is decided inside the Edge Function, never trusted
          from this file — this file never even knows the amount until
@@ -62,7 +64,7 @@
   const forms = document.querySelectorAll('form[data-reg-form]');
   if (!cfg || !forms.length) return;
 
-  const PAID_FORM_TYPES = ['team', 'phase1PrevTeam', 'phase1NewTeam'];
+  const PAID_FORM_TYPES = ['team', 'phase1PrevTeam', 'phase1NewTeam', 'individual'];
 
   const isOpen = Date.now() >= new Date(cfg.opensAt).getTime();
   const backendReady = !!(cfg.supabaseUrl && cfg.supabaseAnonKey);
@@ -160,9 +162,9 @@
           amount: order.amount,
           currency: order.currency,
           name: 'REEV SAEINDIA 4.0',
-          description: 'Team registration fee',
+          description: data.formType === 'individual' ? 'Individual registration fee' : 'Team registration fee',
           prefill: {
-            name: data.captainName || data.contactName || '',
+            name: data.captainName || data.contactName || data.fullName || '',
             email: data.captainEmail || data.email || '',
             contact: data.captainPhone || data.phone || ''
           },

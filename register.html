@@ -99,7 +99,7 @@
 </div>
 <section class="page-intro">
   <div class="wrap reveal">
-    <p>Everything you need to bring a college, a judge, or a volunteer into REEV 4.0 for the 2026–27 season.</p>
+    <p>Everything you need to bring a college, a judge, a volunteer, or yourself into REEV 4.0 for the 2026–27 season.</p>
   </div>
 </section>
 
@@ -109,6 +109,7 @@
       <button class="reg-tab-btn active" data-tab="tab-team" type="button">Register a Team</button>
       <button class="reg-tab-btn" data-tab="tab-judge" type="button">Register as a Judge</button>
       <button class="reg-tab-btn" data-tab="tab-techteam" type="button">Register — Tech Team / Volunteer</button>
+      <button class="reg-tab-btn" data-tab="tab-individual" type="button">Register — Individual</button>
     </div>
 
     <div class="reg-tab-panel active" id="tab-team">
@@ -334,6 +335,43 @@
           </form>
         </div>
       </div>
+    </div>
+
+    <div class="reg-tab-panel" id="tab-individual">
+      <p class="reveal" style="color:var(--steel);font-size:14.5px;margin-bottom:22px;max-width:640px;">Not part of a team? Register individually to attend REEV 4.0's technical sessions and finals.</p>
+      <form class="reg-form reveal" data-reg-form="individual">
+        <div class="form-grid">
+          <div class="field">
+            <label for="ind-reg-name">Full name <span class="req">*</span></label>
+            <input type="text" id="ind-reg-name" name="fullName" required>
+          </div>
+          <div class="field">
+            <label for="ind-reg-college">College <span class="req">*</span></label>
+            <input type="text" id="ind-reg-college" name="college" required>
+          </div>
+          <div class="field">
+            <label for="ind-reg-year">Year of study <span class="req">*</span></label>
+            <input type="text" id="ind-reg-year" name="year" required>
+          </div>
+          <div class="field">
+            <label for="ind-reg-email">Email <span class="req">*</span></label>
+            <input type="email" id="ind-reg-email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="ind-reg-phone">Phone <span class="req">*</span></label>
+            <input type="tel" id="ind-reg-phone" name="phone" required>
+          </div>
+          <div class="field field-wide">
+            <label for="ind-reg-reason">Why are you interested? <span class="req">*</span></label>
+            <textarea id="ind-reg-reason" name="reason" required></textarea>
+          </div>
+        </div>
+        <p class="fee-note">Registration fee: <strong>₹2,000</strong>, paid securely via Razorpay after you submit this form.</p>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Pay ₹2,000 &amp; submit ↗</button>
+          <p class="form-status" data-form-status></p>
+        </div>
+      </form>
     </div>
   </div>
 </section>

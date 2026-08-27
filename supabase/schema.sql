@@ -96,7 +96,14 @@ create table individuals (
   year text not null,
   reason text not null,
   email text not null,
-  phone text not null
+  phone text not null,
+  -- Paid path: the "Register — Individual" tab on register.html (₹2,000,
+  -- via Razorpay). Unused/defaulted for the older free phase1Individual
+  -- path (index.html's Phase 1 modal). Mirrors team_registrations' fields.
+  payment_status text not null default 'pending'
+    check (payment_status in ('pending', 'paid', 'failed')),
+  payment_id text,
+  amount_paid_inr numeric
 );
 
 -- ============ PAYMENTS (audit trail, separate from team_registrations) ============
@@ -104,6 +111,7 @@ create table payments (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
   team_registration_id uuid references team_registrations(id) on delete set null,
+  individual_id uuid references individuals(id) on delete set null,
   razorpay_order_id text not null,
   razorpay_payment_id text,
   razorpay_signature text,

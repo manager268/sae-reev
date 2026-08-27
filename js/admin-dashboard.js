@@ -173,9 +173,12 @@
         { key: 'created_at', label: 'Registered', format: (r) => fmtDateVal(r.created_at) },
         { key: 'full_name', label: 'Name' }, { key: 'college', label: 'College' },
         { key: 'year', label: 'Year' }, { key: 'reason', label: 'Reason' },
-        { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' }
+        { key: 'email', label: 'Email' }, { key: 'phone', label: 'Phone' },
+        { key: 'payment_status', label: 'Payment', badge: true },
+        { key: 'payment_id', label: 'Payment ID' },
+        { key: 'amount_paid_inr', label: 'Amount (₹)' }
       ],
-      editFields: ['full_name', 'college', 'year', 'reason', 'email', 'phone'],
+      editFields: ['full_name', 'college', 'year', 'reason', 'email', 'phone', 'payment_status', 'payment_id', 'amount_paid_inr'],
       insertable: true
     },
     submission_logs: {
@@ -500,17 +503,22 @@
       sb.from('student_volunteers').select('*', { count: 'exact', head: true }),
       sb.from('mentors').select('*', { count: 'exact', head: true }),
       sb.from('smes').select('*', { count: 'exact', head: true }),
-      sb.from('individuals').select('*', { count: 'exact', head: true })
+      // Individuals now pay too (₹2,000 — see registration-api/index.ts), so this
+      // also needs the payment columns, not just a head-count, for the revenue/
+      // pending/failed stats below.
+      sb.from('individuals').select('payment_status, amount_paid_inr', { count: 'exact' })
     ]);
     const teams = teamsRes.data || [];
-    const revenue = teams
-      .filter((t) => t.payment_status === 'paid')
-      .reduce((sum, t) => sum + (Number(t.amount_paid_inr) || 0), 0);
+    const individuals = individualsRes.data || [];
+    // Revenue/pending/failed are collected across every paid registration
+    // type, not just teams — individuals are part of the same event finances.
+    const paid = teams.concat(individuals).filter((r) => r.payment_status === 'paid');
+    const revenue = paid.reduce((sum, r) => sum + (Number(r.amount_paid_inr) || 0), 0);
 
     setStat('teamCount', teams.length);
     setStat('revenue', '₹' + revenue.toLocaleString('en-IN'));
-    setStat('pendingCount', teams.filter((t) => t.payment_status === 'pending').length);
-    setStat('failedCount', teams.filter((t) => t.payment_status === 'failed').length);
+    setStat('pendingCount', teams.concat(individuals).filter((r) => r.payment_status === 'pending').length);
+    setStat('failedCount', teams.concat(individuals).filter((r) => r.payment_status === 'failed').length);
     setStat('judgeCount', judgesRes.count != null ? judgesRes.count : '—');
     setStat('studentCount', studentsRes.count != null ? studentsRes.count : '—');
     setStat('mentorCount', mentorsRes.count != null ? mentorsRes.count : '—');
