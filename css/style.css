@@ -744,8 +744,9 @@
   .hero-baja-title .eyebrow{justify-content:center;color:var(--orange-bright);}
   .hero-baja-title h1{
     font-family:var(--display);font-weight:900;text-transform:uppercase;
-    color:rgba(250,246,238,0.94);letter-spacing:.01em;line-height:1.04;
-    font-size:clamp(34px,7vw,84px);text-shadow:0 4px 30px rgba(0,0,0,0.45);
+    color:rgba(250,246,238,0.94);letter-spacing:.005em;line-height:1.04;
+    font-size:clamp(20px,4vw,58px);text-shadow:0 4px 30px rgba(0,0,0,0.45);
+    max-width:1500px;margin:0 auto;
   }
   .hero-baja-title h1 .accent{color:var(--orange-bright);}
   .hero-baja-title .hero-baja-tagline{
