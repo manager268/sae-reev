@@ -40,7 +40,6 @@ window.QUICK_LINKS = [
       { label: "Standardization",  href: "architecture.html#standardization" },
       { label: "Energy",           href: "architecture.html#energy" },
       { label: "Software",         href: "architecture.html#software" },
-      { label: "Partnership",      href: "architecture.html#partnership" },
       { label: "Mentorship",       href: "architecture.html#mentorship" }
     ]
   }
