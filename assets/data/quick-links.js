@@ -21,6 +21,7 @@
     - To add an item, copy an existing { ... } block and edit it.
 */
 window.QUICK_LINKS = [
+  { label: "Technical & Software Sessions", href: "sessions.html" },
   { label: "Steering Committee",     href: "committee.html#steering" },
   { label: "Organizing Committee",   href: "committee.html#organizing" },
   { label: "Technical Committee",    href: "committee.html#technical" },
