@@ -702,6 +702,14 @@
   .hero-baja .hero-slideshow video.slide{width:100%;height:100%;object-fit:cover;object-position:center;background:#0b0e13;}
   @keyframes heroKenBurns{from{transform:scale(1);}to{transform:scale(1.07);}}
   @media (prefers-reduced-motion: reduce){.hero-baja .hero-slideshow .slide.active{animation:none;}}
+  /* Per-photo framing: nudged so each shot's subject clears the text block
+     instead of every slide using the same dead-center crop, and each zooms
+     from the direction its own subject sits in rather than a generic center. */
+  .hero-baja .hero-slideshow .slide--night{background-position:center 30%;transform-origin:center 40%;}
+  .hero-baja .hero-slideshow .slide--convoy{background-position:center 38%;transform-origin:center 35%;}
+  .hero-baja .hero-slideshow .slide--red{background-position:center 55%;transform-origin:65% 55%;}
+  .hero-baja .hero-slideshow .slide--banner{background-position:center 40%;transform-origin:60% 45%;}
+  .hero-baja .hero-slideshow .slide--archway{background-position:center 15%;transform-origin:center 10%;}
   .hero-baja .hero-scrim{
     position:absolute;inset:0;
     background:
@@ -748,17 +756,23 @@
   }
   .hero-baja-title .tagline-rule{width:34px;height:1px;background:currentColor;opacity:.55;flex:none;}
   @media (max-width:560px){.hero-baja-title .tagline-rule{width:18px;}}
-  .hero-dots{position:relative;z-index:2;display:flex;justify-content:center;gap:2px;padding-bottom:26px;}
+  .hero-dots{position:relative;z-index:2;display:flex;justify-content:center;gap:7px;padding-bottom:26px;}
   .hero-dot{
-    width:26px;height:26px;background:transparent;border:none;padding:0;cursor:pointer;
-    display:flex;align-items:center;justify-content:center;
+    width:34px;height:3px;border-radius:2px;padding:0;cursor:pointer;
+    border:none;background:rgba(250,246,238,0.28);position:relative;overflow:hidden;
+    transition:background .2s;
   }
-  .hero-dot::before{
-    content:"";width:9px;height:9px;border-radius:50%;background:rgba(250,246,238,0.35);
-    transition:background .2s, transform .2s;
+  .hero-dot::after{
+    content:"";position:absolute;inset:0;background:var(--orange-bright);
+    transform:scaleX(0);transform-origin:left center;
   }
-  .hero-dot.active::before{background:var(--orange-bright);transform:scale(1.25);}
-  .hero-dot:hover::before{background:rgba(250,246,238,0.7);}
+  .hero-dot.active::after{animation:heroDotFill var(--dwell,5000ms) linear forwards;}
+  .hero-dot:not(.active)::after{transform:scaleX(0);}
+  .hero-dot:hover{background:rgba(250,246,238,0.5);}
+  @keyframes heroDotFill{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  @media (prefers-reduced-motion: reduce){
+    .hero-dot.active::after{animation:none;transform:scaleX(1);}
+  }
 
   .hero-quickbar{padding-top:32px;padding-bottom:8px;position:relative;z-index:1;}
   .hero-quickbar-inner{

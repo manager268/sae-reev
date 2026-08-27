@@ -154,6 +154,10 @@ if (menuBtn && mobileNav) {
   const FADE_MS = 1400;   // matches the .slide opacity transition duration in css/style.css
   let current = 0;
 
+  // Slide 0 starts active straight from the HTML, so goTo() never runs for it —
+  // set its dwell time here so the first dot's fill-bar animation still matches.
+  dots[0]?.style.setProperty('--dwell', (0 === videoIndex ? VIDEO_MS : PHOTO_MS) + 'ms');
+
   // Respect reduced-motion: don't autoplay the flag-off clip, just show its poster frame.
   if (reduceMotion && heroVideo) {
     heroVideo.pause();
@@ -166,7 +170,12 @@ if (menuBtn && mobileNav) {
     dots[prev]?.classList.remove('active');
     current = index;
     slides[current].classList.add('active');
-    dots[current]?.classList.add('active');
+    if (dots[current]) {
+      // Drives the dot's fill-bar animation (see .hero-dot::after in css/style.css)
+      // so it visually tracks how long this particular slide will actually dwell.
+      dots[current].style.setProperty('--dwell', (current === videoIndex ? VIDEO_MS : PHOTO_MS) + 'ms');
+      dots[current].classList.add('active');
+    }
 
     if (heroVideo && !reduceMotion) {
       if (current === videoIndex) {
