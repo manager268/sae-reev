@@ -81,7 +81,10 @@
     amount_paid_inr: 'Amount paid (₹)', status: 'Status', full_name: 'Full name',
     organisation: 'Organisation', expertise: 'Expertise', email: 'Email', phone: 'Phone',
     college: 'College', year: 'Year', interest: 'Interest', reason: 'Reason',
-    registration_type: 'Registration type'
+    registration_type: 'Registration type', edition: 'Previous edition competed in',
+    advisor1_name: 'Faculty advisor 1 - name', advisor1_email: 'Faculty advisor 1 - email',
+    advisor1_phone: 'Faculty advisor 1 - phone', advisor2_name: 'Faculty advisor 2 - name',
+    advisor2_email: 'Faculty advisor 2 - email', advisor2_phone: 'Faculty advisor 2 - phone'
   };
 
   // ============ per-tab table configuration ============
@@ -92,6 +95,7 @@
       columns: [
         { key: 'created_at', label: 'Registered', format: (r) => fmtDateVal(r.created_at) },
         { key: 'registration_type', label: 'Type', format: fmtRegType },
+        { key: 'edition', label: 'Prev. edition' },
         { key: 'college_name', label: 'College' },
         { key: 'team_name', label: 'Team' },
         { key: 'contact_name', label: 'Contact' },
@@ -99,13 +103,19 @@
         { key: 'contact_phone', label: 'Phone' },
         { key: 'team_size', label: 'Size' },
         { key: 'team_members', label: 'Roster', format: fmtRoster },
+        { key: 'advisor1_name', label: 'Advisor 1' },
+        { key: 'advisor1_email', label: 'Advisor 1 email' },
+        { key: 'advisor1_phone', label: 'Advisor 1 phone' },
+        { key: 'advisor2_name', label: 'Advisor 2' },
+        { key: 'advisor2_email', label: 'Advisor 2 email' },
+        { key: 'advisor2_phone', label: 'Advisor 2 phone' },
         { key: 'payment_status', label: 'Payment', badge: true },
         { key: 'payment_id', label: 'Payment ID' },
         { key: 'amount_paid_inr', label: 'Amount (₹)' },
         { key: 'notes', label: 'Notes' }
       ],
-      editFields: ['college_name', 'team_name', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
-      createFields: ['registration_type', 'college_name', 'team_name', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
+      editFields: ['college_name', 'team_name', 'edition', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'advisor1_name', 'advisor1_email', 'advisor1_phone', 'advisor2_name', 'advisor2_email', 'advisor2_phone', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
+      createFields: ['registration_type', 'college_name', 'team_name', 'edition', 'contact_name', 'contact_email', 'contact_phone', 'team_size', 'advisor1_name', 'advisor1_email', 'advisor1_phone', 'advisor2_name', 'advisor2_email', 'advisor2_phone', 'payment_status', 'payment_id', 'amount_paid_inr', 'notes'],
       deleteConfirmField: 'team_name',
       insertable: true
     },

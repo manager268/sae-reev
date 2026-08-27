@@ -601,6 +601,20 @@
   .reg-form textarea{resize:vertical;min-height:80px;}
   .reg-form .form-actions{margin-top:24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
 
+  /* Team form step wizard (Team details -> Faculty advisors) */
+  .step-indicator{display:flex;gap:0;margin-bottom:26px;border-bottom:1px solid var(--line-strong);}
+  .step-dot{
+    font-family:var(--mono);font-size:12px;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;
+    padding:0 0 12px;margin-right:28px;border-bottom:2px solid transparent;transition:color .2s, border-color .2s;
+  }
+  .step-dot.active{color:var(--orange-bright);border-bottom-color:var(--orange-bright);}
+  .team-status-section{margin-top:22px;padding-top:22px;border-top:1px solid var(--line-strong);}
+  .radio-row{display:flex;gap:22px;flex-wrap:wrap;margin-top:12px;}
+  .radio-option{display:flex;align-items:center;gap:8px;font-family:var(--body);font-size:14px;color:var(--ink);text-transform:none;cursor:pointer;}
+  .radio-option input{width:auto;accent-color:var(--orange-bright);}
+  .advisor-block > label{display:block;margin-bottom:12px;}
+  .reg-form .field[hidden]{display:none;} /* .reg-form .field's display:flex otherwise wins the tie over the UA [hidden] rule */
+
   /* Repeatable team-member rows (Team form) */
   .member-section{margin-top:24px;padding-top:22px;border-top:1px solid var(--line-strong);}
   .member-section > label{font-family:var(--mono);font-size:12px;color:var(--steel);text-transform:uppercase;letter-spacing:.05em;}

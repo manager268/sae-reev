@@ -28,6 +28,13 @@ create table team_registrations (
   contact_phone text not null,
   team_size int not null default 1,
   notes text,
+  -- Two faculty advisors, collected on the Team form's second step.
+  advisor1_name text,
+  advisor1_email text,
+  advisor1_phone text,
+  advisor2_name text,
+  advisor2_email text,
+  advisor2_phone text,
   payment_status text not null default 'pending'
     check (payment_status in ('pending', 'paid', 'failed')),
   payment_id text,

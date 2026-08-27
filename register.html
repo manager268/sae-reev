@@ -123,51 +123,113 @@
       </div>
 
       <form class="reg-form reveal" data-reg-form="team">
-        <div class="form-grid">
-          <div class="field field-wide">
-            <label for="team-college">College / Institution name <span class="req">*</span></label>
-            <input type="text" id="team-college" name="collegeName" required>
+        <div class="step-indicator">
+          <span class="step-dot active" data-step-dot="1">1. Team details</span>
+          <span class="step-dot" data-step-dot="2">2. Faculty advisors</span>
+        </div>
+
+        <div class="form-step" data-form-step="1">
+          <div class="form-grid">
+            <div class="field field-wide">
+              <label for="team-college">College / Institution name <span class="req">*</span></label>
+              <input type="text" id="team-college" name="collegeName" required>
+            </div>
+            <div class="field">
+              <label for="team-name">Team name <span class="req">*</span></label>
+              <input type="text" id="team-name" name="teamName" required>
+            </div>
+            <div class="field">
+              <label for="team-captain">Team captain name <span class="req">*</span></label>
+              <input type="text" id="team-captain" name="captainName" required>
+            </div>
+            <div class="field">
+              <label for="team-email">Captain email <span class="req">*</span></label>
+              <input type="email" id="team-email" name="captainEmail" required>
+            </div>
+            <div class="field">
+              <label for="team-phone">Captain phone <span class="req">*</span></label>
+              <input type="tel" id="team-phone" name="captainPhone" required>
+            </div>
+            <div class="field">
+              <label for="team-size">Team size (incl. captain)</label>
+              <input type="text" id="team-size" name="teamSize" readonly data-team-size>
+            </div>
           </div>
-          <div class="field">
-            <label for="team-name">Team name <span class="req">*</span></label>
-            <input type="text" id="team-name" name="teamName" required>
+
+          <div class="team-status-section">
+            <label>Is this a new team, or one that competed in a previous REEV edition? <span class="req">*</span></label>
+            <div class="radio-row">
+              <label class="radio-option"><input type="radio" name="teamStatus" value="new" data-team-status checked> New team</label>
+              <label class="radio-option"><input type="radio" name="teamStatus" value="previous" data-team-status> Previously participated team</label>
+            </div>
+            <div class="field field-wide" data-edition-field hidden style="margin-top:14px;">
+              <label for="team-edition">Which edition did you compete in? <span class="req">*</span></label>
+              <input type="text" id="team-edition" name="edition">
+            </div>
           </div>
-          <div class="field">
-            <label for="team-captain">Team captain name <span class="req">*</span></label>
-            <input type="text" id="team-captain" name="captainName" required>
+
+          <div class="member-section">
+            <label>Other team members</label>
+            <p class="member-hint">Add every member besides the captain — name, branch, year, email and phone for each.</p>
+            <div class="member-list" data-member-list data-member-template="team-member-template"></div>
+            <button type="button" class="member-add" data-member-add>+ Add member</button>
           </div>
-          <div class="field">
-            <label for="team-email">Captain email <span class="req">*</span></label>
-            <input type="email" id="team-email" name="captainEmail" required>
+          <input type="hidden" name="participants" data-participants-json>
+
+          <div class="form-grid" style="margin-top:20px;">
+            <div class="field field-wide">
+              <label for="team-notes">Anything else we should know?</label>
+              <textarea id="team-notes" name="notes"></textarea>
+            </div>
           </div>
-          <div class="field">
-            <label for="team-phone">Captain phone <span class="req">*</span></label>
-            <input type="tel" id="team-phone" name="captainPhone" required>
-          </div>
-          <div class="field">
-            <label for="team-size">Team size (incl. captain)</label>
-            <input type="text" id="team-size" name="teamSize" readonly data-team-size>
+
+          <div class="form-actions">
+            <button type="button" class="btn-primary" data-step-next>Next: Faculty advisors →</button>
           </div>
         </div>
 
-        <div class="member-section">
-          <label>Other team members</label>
-          <p class="member-hint">Add every member besides the captain — name, branch, year, email and phone for each.</p>
-          <div class="member-list" data-member-list data-member-template="team-member-template"></div>
-          <button type="button" class="member-add" data-member-add>+ Add member</button>
-        </div>
-        <input type="hidden" name="participants" data-participants-json>
-
-        <div class="form-grid" style="margin-top:20px;">
-          <div class="field field-wide">
-            <label for="team-notes">Anything else we should know?</label>
-            <textarea id="team-notes" name="notes"></textarea>
+        <div class="form-step" data-form-step="2" hidden>
+          <div class="advisor-block">
+            <label>Faculty Advisor 1 <span class="req">*</span></label>
+            <div class="form-grid">
+              <div class="field">
+                <label for="adv1-name">Name <span class="req">*</span></label>
+                <input type="text" id="adv1-name" name="advisor1Name" required>
+              </div>
+              <div class="field">
+                <label for="adv1-email">Email <span class="req">*</span></label>
+                <input type="email" id="adv1-email" name="advisor1Email" required>
+              </div>
+              <div class="field">
+                <label for="adv1-phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="adv1-phone" name="advisor1Phone" required>
+              </div>
+            </div>
           </div>
-        </div>
-        <p class="fee-note">Registration fee: <strong>₹20,000</strong>, paid securely via Razorpay after you submit this form.</p>
-        <div class="form-actions">
-          <button type="submit" class="btn-primary">Pay ₹20,000 &amp; submit ↗</button>
-          <p class="form-status" data-form-status></p>
+          <div class="advisor-block" style="margin-top:22px;">
+            <label>Faculty Advisor 2 <span class="req">*</span></label>
+            <div class="form-grid">
+              <div class="field">
+                <label for="adv2-name">Name <span class="req">*</span></label>
+                <input type="text" id="adv2-name" name="advisor2Name" required>
+              </div>
+              <div class="field">
+                <label for="adv2-email">Email <span class="req">*</span></label>
+                <input type="email" id="adv2-email" name="advisor2Email" required>
+              </div>
+              <div class="field">
+                <label for="adv2-phone">Phone <span class="req">*</span></label>
+                <input type="tel" id="adv2-phone" name="advisor2Phone" required>
+              </div>
+            </div>
+          </div>
+
+          <p class="fee-note">Registration fee: <strong>₹20,000</strong>, paid securely via Razorpay after you submit this form.</p>
+          <div class="form-actions">
+            <button type="button" class="btn-ghost" data-step-back>← Back</button>
+            <button type="submit" class="btn-primary">Pay ₹20,000 &amp; submit ↗</button>
+            <p class="form-status" data-form-status></p>
+          </div>
         </div>
       </form>
 
@@ -432,6 +494,7 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="js/main.js"></script>
 <script src="js/team-members.js"></script>
+<script src="js/team-registration-steps.js"></script>
 <script src="js/registration-form.js"></script>
 </body>
 </html>

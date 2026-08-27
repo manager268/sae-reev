@@ -228,6 +228,16 @@
       const data = Object.fromEntries(new FormData(form).entries());
       data.formType = formType;
 
+      // TEAM STATUS -> formType: the Team form's "New team" / "Previously
+      // participated team" choice (see js/team-registration-steps.js)
+      // reuses the backend's existing phase1NewTeam/phase1PrevTeam paths —
+      // same ₹20,000 fee, same table, just a different registration_type
+      // and whether "edition" is required. Team fee/validation code in
+      // registration-api/index.ts never had to change for this.
+      if (formType === 'team' && data.teamStatus) {
+        data.formType = data.teamStatus === 'previous' ? 'phase1PrevTeam' : 'phase1NewTeam';
+      }
+
       if (submitBtn) submitBtn.disabled = true;
 
       if (isPaid && form._verifiedPayment) {

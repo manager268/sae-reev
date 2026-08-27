@@ -194,7 +194,11 @@ async function validateTeamRegistration(formType: string, data: Record<string, a
   const contactEmail = data.captainEmail || data.email;
   const contactPhone = data.captainPhone || data.phone;
 
-  const requiredBase = ["collegeName", "teamName"];
+  const requiredBase = [
+    "collegeName", "teamName",
+    "advisor1Name", "advisor1Email", "advisor1Phone",
+    "advisor2Name", "advisor2Email", "advisor2Phone",
+  ];
   if (formType === "phase1PrevTeam") requiredBase.push("edition");
   const err = missingField(data, requiredBase) ||
     (!contactName ? "Missing required field: contact name" : null) ||
@@ -385,6 +389,12 @@ async function submitTeamRegistration(formType: string, data: Record<string, any
       contact_phone: contactPhone,
       team_size: Number(data.teamSize) || members.length + 1,
       notes: data.notes || null,
+      advisor1_name: data.advisor1Name,
+      advisor1_email: data.advisor1Email,
+      advisor1_phone: data.advisor1Phone,
+      advisor2_name: data.advisor2Name,
+      advisor2_email: data.advisor2Email,
+      advisor2_phone: data.advisor2Phone,
       payment_status: "paid",
       payment_id: data.razorpay_payment_id,
       amount_paid_inr: TEAM_FEE_PAISE / 100,
