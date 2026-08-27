@@ -8,6 +8,8 @@
 // Secrets this function reads from its environment (set via
 // `supabase secrets set`, never committed to git — see SUPABASE_SETUP.md):
 //   RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET
+//   RESEND_API_KEY (optional — confirmation emails are skipped, not broken,
+//   if this isn't set; see sendConfirmationEmail below)
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided automatically by
 // the Supabase runtime — you don't set those yourself.
 
@@ -17,6 +19,8 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const RAZORPAY_KEY_ID = Deno.env.get("RAZORPAY_KEY_ID") ?? "";
 const RAZORPAY_KEY_SECRET = Deno.env.get("RAZORPAY_KEY_SECRET") ?? "";
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+const RESEND_FROM_EMAIL = Deno.env.get("RESEND_FROM_EMAIL") ?? "REEV SAEINDIA <onboarding@resend.dev>";
 
 // The amounts actually charged. The "₹20,000"/"₹2,000" text on the site is
 // just a label — these constants are the only thing that decides what gets
@@ -58,6 +62,16 @@ Deno.serve(async (req) => {
   try {
     data = await req.json();
 
+    // Honeypot: every public form has a "website" field that's hidden
+    // off-screen (see register.html) — a real visitor never fills it in,
+    // a bot filling every field usually does. Caught bots get a fake
+    // success (so they don't learn to skip the field) and nothing is
+    // written; logged as BLOCKED for visibility in submission_logs.
+    if (data.website) {
+      await logAttempt(data.formType || data.action || "(unknown)", data, "BLOCKED", "Honeypot field filled");
+      return jsonResponse({ ok: true });
+    }
+
     if (data.action === "createOrder") {
       return await handleCreateOrder(data);
     }
@@ -81,6 +95,7 @@ Deno.serve(async (req) => {
 
     const result = await submitForm(formType, data);
     await logAttempt(formType, data, result.ok ? "OK" : "ERROR", result.ok ? "" : result.error!);
+    if (result.ok) await sendConfirmationEmail(formType, data);
     return jsonResponse(result);
   } catch (err) {
     await logAttempt(formType, data, "ERROR", String(err));
@@ -509,5 +524,63 @@ async function logAttempt(formType: string, data: Record<string, any>, status: s
     });
   } catch {
     // never let logging break a real submission
+  }
+}
+
+// ---- Confirmation email (optional — via Resend) -----------------------------
+
+const FORM_TYPE_LABELS: Record<string, string> = {
+  team: "team registration",
+  phase1PrevTeam: "team registration",
+  phase1NewTeam: "team registration",
+  individual: "individual registration",
+  judge: "judge registration",
+  techteamStudent: "volunteer registration",
+  techteamMentor: "mentor registration",
+  techteamSme: "SME registration",
+  phase1Individual: "registration",
+};
+
+// Every form type stashes its "who do we email" info under different field
+// names (captainEmail vs email, captainName vs fullName, ...) — this is the
+// one place that knows the mapping, shared by nothing else.
+function contactInfoFor(formType: string, data: Record<string, any>): { email?: string; name?: string } {
+  if (formType === "team" || formType === "phase1PrevTeam" || formType === "phase1NewTeam") {
+    return { email: data.captainEmail || data.contactEmail, name: data.captainName || data.contactName };
+  }
+  return { email: data.email, name: data.fullName };
+}
+
+// Best-effort only: a confirmation email failing (missing RESEND_API_KEY,
+// Resend being down, a bad address, etc.) must never turn an otherwise-
+// successful registration into an error response — that's why every path
+// through here is wrapped and swallows its own errors.
+async function sendConfirmationEmail(formType: string, data: Record<string, any>) {
+  if (!RESEND_API_KEY) return; // not configured yet — silently skip, see SUPABASE_SETUP.md
+  const { email, name } = contactInfoFor(formType, data);
+  if (!email) return;
+
+  const label = FORM_TYPE_LABELS[formType] || "registration";
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: RESEND_FROM_EMAIL,
+        to: [email],
+        subject: "You're registered for REEV SAEINDIA 4.0",
+        html:
+          `<p>Hi ${name || "there"},</p>` +
+          `<p>Thanks — your ${label} for <strong>REEV SAEINDIA 4.0</strong> (Season 2026–27) is confirmed.</p>` +
+          `<p>We'll be in touch with next steps as the season moves along. Questions in the meantime? ` +
+          `Just reply to this email, or write to <a href="mailto:manager@saeibs.org">manager@saeibs.org</a>.</p>` +
+          `<p>— REEV SAEINDIA, Bengaluru Section</p>`,
+      }),
+    });
+  } catch {
+    // network/API failure — never let this affect the registration result above
   }
 }

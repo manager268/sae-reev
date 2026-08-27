@@ -351,6 +351,8 @@
     display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;
     font-family:var(--mono);font-size:12px;color:var(--steel);
   }
+  .footer-legal-links a{color:var(--steel);}
+  .footer-legal-links a:hover{color:var(--orange-bright);}
 
   /* HERO PHOTO SLIDESHOW */
   .hero{padding:72px 0 60px;overflow:hidden;}

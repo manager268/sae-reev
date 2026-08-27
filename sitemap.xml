@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://sae-reev.vercel.app/</loc><priority>1.0</priority></url>
+  <url><loc>https://sae-reev.vercel.app/about.html</loc><priority>0.8</priority></url>
+  <url><loc>https://sae-reev.vercel.app/architecture.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sae-reev.vercel.app/register.html</loc><priority>0.9</priority></url>
+  <url><loc>https://sae-reev.vercel.app/sessions.html</loc><priority>0.8</priority></url>
+  <url><loc>https://sae-reev.vercel.app/committee.html</loc><priority>0.6</priority></url>
+  <url><loc>https://sae-reev.vercel.app/news.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sae-reev.vercel.app/results.html</loc><priority>0.6</priority></url>
+  <url><loc>https://sae-reev.vercel.app/sponsors.html</loc><priority>0.7</priority></url>
+  <url><loc>https://sae-reev.vercel.app/resources.html</loc><priority>0.6</priority></url>
+  <url><loc>https://sae-reev.vercel.app/gallery.html</loc><priority>0.5</priority></url>
+  <url><loc>https://sae-reev.vercel.app/terms.html</loc><priority>0.3</priority></url>
+  <url><loc>https://sae-reev.vercel.app/privacy.html</loc><priority>0.3</priority></url>
+  <url><loc>https://sae-reev.vercel.app/refunds.html</loc><priority>0.3</priority></url>
+  <url><loc>https://sae-reev.vercel.app/shipping.html</loc><priority>0.3</priority></url>
+</urlset>

@@ -206,6 +206,37 @@ Nothing else needed — email-uniqueness (Step 7) and payment-idempotency
 (Step 6) already cover every table and the whole `payments` table
 respectively, `individuals` included.
 
+## Step 9 — Confirmation emails (optional)
+
+Every successful registration (team, individual, judge, mentor, SME,
+volunteer) can send the registrant a short "you're confirmed" email. This
+is entirely optional — until it's set up, the function just silently
+skips sending one; nothing else breaks.
+
+1. Sign up at [resend.com](https://resend.com) (free tier: 3,000
+   emails/month). You can start sending immediately from their shared
+   `onboarding@resend.dev` sender — verifying your own domain (e.g.
+   `reev@saeibs.org`) is a one-time DNS step you can do later, purely
+   cosmetic for the "From" address.
+2. Dashboard → **API Keys → Create API Key**, copy it.
+3. Set the secrets (paste the key straight from Resend — never through
+   chat/AI, same rule as the Razorpay Key Secret):
+   ```
+   supabase secrets set RESEND_API_KEY=your_resend_api_key
+   ```
+   Optional — only if you've verified your own sending domain:
+   ```
+   supabase secrets set RESEND_FROM_EMAIL="REEV SAEINDIA <reev@saeibs.org>"
+   ```
+4. Redeploy:
+   ```
+   supabase functions deploy registration-api
+   ```
+
+That's it — no frontend change, no new table. Every registration type
+maps its own "who to email" field internally (`contactInfoFor` in
+`registration-api/index.ts`).
+
 ## Local development note
 
 `supabase/functions/registration-api/index.ts` is a Deno Edge Function —
