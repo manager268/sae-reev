@@ -154,9 +154,25 @@ if (menuBtn && mobileNav) {
   const FADE_MS = 1400;   // matches the .slide opacity transition duration in css/style.css
   let current = 0;
 
+  // Background-image slides are marked up with data-bg instead of an inline
+  // background-image so nothing downloads until it's actually about to be
+  // needed — assigning it here (rather than in the HTML) is what makes that
+  // lazy. Called one dwell-period ahead of time, so the image has the full
+  // PHOTO_MS/VIDEO_MS window to arrive before its slide fades in.
+  function preloadSlide(index) {
+    const el = slides[index];
+    if (el && el.dataset.bg && !el.style.backgroundImage) {
+      el.style.backgroundImage = "url('" + el.dataset.bg + "')";
+    }
+  }
+
   // Slide 0 starts active straight from the HTML, so goTo() never runs for it —
   // set its dwell time here so the first dot's fill-bar animation still matches.
   dots[0]?.style.setProperty('--dwell', (0 === videoIndex ? VIDEO_MS : PHOTO_MS) + 'ms');
+  // Slide 0 (the flag-off video) dwells for VIDEO_MS before advancing, which
+  // is comfortably long enough to fetch the very next slide's image ahead of
+  // time — start that fetch now instead of waiting for goTo().
+  preloadSlide((0 + 1) % slides.length);
 
   // Respect reduced-motion: don't autoplay the flag-off clip, just show its poster frame.
   if (reduceMotion && heroVideo) {
@@ -169,7 +185,13 @@ if (menuBtn && mobileNav) {
     slides[prev].classList.remove('active');
     dots[prev]?.classList.remove('active');
     current = index;
+    // A manual dot click can jump straight to a slide that was never
+    // scheduled for preload — make sure its own image is at least requested
+    // before it's shown, on top of the one-ahead prefetch below.
+    preloadSlide(current);
     slides[current].classList.add('active');
+    // Give the slide after this one a full dwell period to load in the background.
+    preloadSlide((current + 1) % slides.length);
     if (dots[current]) {
       // Drives the dot's fill-bar animation (see .hero-dot::after in css/style.css)
       // so it visually tracks how long this particular slide will actually dwell.
