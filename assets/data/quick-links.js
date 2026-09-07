@@ -22,6 +22,20 @@
 */
 window.QUICK_LINKS = [
   { label: "Technical & Software Sessions", href: "sessions.html" },
+  {
+    label: "Your REEV 4.0 Journey",
+    children: [
+      { label: "Why Participate?",        href: "index.html#why-participate" },
+      { label: "Learn → Build & Prove",   href: "index.html#stages" },
+      { label: "Technical Challenge",     href: "index.html#challenge" },
+      { label: "2026–27 Timeline",        href: "index.html#timeline" },
+      { label: "CCE — How You're Evaluated", href: "index.html#cce" },
+      { label: "REEV Journey (History)",  href: "about.html#reev-journey" }
+    ]
+  },
+  { label: "Awards & Recognition",   href: "about.html#awards" },
+  { label: "Faculty & Institutions", href: "about.html#faculty" },
+  { label: "Contact Us",             href: "about.html#contact" },
   { label: "Steering Committee",     href: "committee.html#steering" },
   { label: "Organizing Committee",   href: "committee.html#organizing" },
   { label: "Technical Committee",    href: "committee.html#technical" },
